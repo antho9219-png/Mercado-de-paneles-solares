@@ -110,6 +110,13 @@ necesarias.
 python main.py diagnose          # comprobaciones sin red (rápido, 0 peticiones)
 python main.py diagnose --online # + robots.txt y estructura actual (2 peticiones)
 
+# --- Registrar un anuncio a mano (vía autorizada) ---
+python main.py add --interactive             # modo guiado, campo por campo
+python main.py add \
+  --precio "250 USD" --moneda USD --potencia "550 W" \
+  --marca "Jinko" --modelo "Tiger Neo" --vida-util "25 años" --garantia "10 años" \
+  --municipio "Playa" --tipo-producto "panel solar" --fuente "registro_manual"
+
 # --- Importar datos obtenidos legítimamente (vía principal) ---
 python main.py import --input data/examples/ejemplo_paneles_habana.csv
 #   -> data/raw/paneles_solares_habana.csv
@@ -183,12 +190,64 @@ términos de uso de Revolico.
 
 1. **Si tienes autorización / base legítima** para el acceso automatizado,
    define ambas variables y ejecuta `python main.py scrape --max-items 30`.
-2. **Si no la tienes** (caso habitual), usa la vía de importación con datos que
-   sí puedas tratar: `python main.py template` genera la plantilla con las
-   columnas en español y `python main.py import --input <archivo>` la procesa.
+2. **Si no la tienes** (caso habitual), usa una de estas vías autorizadas:
+   - **Registro manual:** `python main.py add --interactive` (o con flags) para
+     anotar un anuncio que observaste legítimamente.
+   - **Importación:** `python main.py template` genera la plantilla con las
+     columnas en español y `python main.py import --input <archivo>` la procesa.
 
 Ninguna de estas opciones elude restricciones, y **ninguna inventa anuncios**:
 lo que hay en `data/processed/` es lo que indica la columna `fuente`.
+
+### Registro manual de anuncios (alternativa autorizada)
+
+El comando `add` permite incorporar datos que **tú** transcribes de forma
+legítima (por ejemplo, consultando el sitio como usuario normal y anotando los
+campos), sin automatizar la extracción ni redistribuir contenido de terceros.
+
+```bash
+# Modo guiado: pregunta campo por campo (deja vacío lo que no sepas)
+python main.py add --interactive
+
+# O en una sola línea:
+python main.py add \
+  --precio "250 USD" --moneda USD --potencia "550 W" \
+  --marca "Jinko" --modelo "Tiger Neo" --vida-util "25 años" --garantia "10 años" \
+  --municipio "Playa" --tipo-producto "panel solar" --fuente "registro_manual"
+```
+
+Reglas del comando:
+
+* **No inventa nada:** los campos que no aportes quedan vacíos.
+* `--fuente` etiqueta el origen (`registro_manual` por defecto) y es la forma de
+  distinguir lo que es dato real de lo que es ejemplo.
+* `fecha_recopilacion` se sella automáticamente (metadato, no dato del anuncio).
+* El municipio se normaliza a los 15 municipios de La Habana; si no se reconoce
+  con seguridad, se deja vacío.
+
+**Campos que se conservan** (columnas del CSV en español):
+
+| Campo | Descripción |
+|---|---|
+| `fecha_recopilacion` | Cuándo registraste el dato (automático) |
+| `precio` | Precio anunciado (texto tal cual, p. ej. "250 USD") |
+| `moneda` | USD, CUP, MLC, EUR (no se convierten) |
+| `potencia_w` | Potencia en vatios (derivada de `potencia`) |
+| `marca` | Marca |
+| `modelo` | Modelo |
+| `vida_util` | Vida útil anunciada (no confundir con garantía) |
+| `garantia` | Garantía anunciada |
+| `municipio` | Municipio de La Habana (normalizado) |
+| `tipo_producto` | panel solar, batería, inversor, kit… |
+| `fuente` | Origen del dato |
+
+### Datos originales vs. datos procesados
+
+* `data/raw/paneles_solares_habana.csv` — **datos originales**: solo lo que se
+  aportó, sin derivar nada (p. ej. `precio="250 USD"` y `precio_valor` vacío).
+* `data/processed/paneles_solares_habana_limpio.csv` — **datos procesados**: los
+  campos derivados y normalizados (`precio_valor=250.0`, `potencia_w=550.0`,
+  `municipio` normalizado, `alcance`, etc.).
 
 ## 7. Estructura del repositorio
 
@@ -206,16 +265,17 @@ mercado-solar-cuba/
 │   └── processed/                 # Datos limpios (generado; NO se versiona)
 ├── notebooks/
 │   └── analisis_mercado_solar_habana.ipynb
-├── tests/                         # 142 pruebas automatizadas
+├── tests/                         # 163 pruebas automatizadas
 ├── config.py                      # Esquema de campos y configuración
 ├── municipios.py                  # Normalización de los 15 municipios de La Habana
 ├── cleaner.py                     # Limpieza y derivación de campos
+├── manual.py                      # Registro manual de anuncios (vía autorizada)
 ├── parser.py                      # Extracción del estado Next.js/Apollo
 ├── analysis.py                    # Duplicados, incompletos y estadísticas
 ├── storage.py                     # CSV/JSON (inglés interno y español de entrega)
 ├── diagnostics.py                 # Diagnóstico: ¿por qué 0 anuncios reales?
 ├── visualization.py               # Gráficos PNG
-├── main.py                        # CLI: diagnose / template / scrape / import / analyze / visualize
+├── main.py                        # CLI: diagnose / add / template / scrape / import / analyze / visualize
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
@@ -340,7 +400,7 @@ python -m pytest -q
 
 Cubren precios, potencias, municipios, vida útil/garantía, modelo, alcance,
 valores ausentes, duplicados, filtro por provincia, exportación en español,
-el pipeline general y el **diagnóstico** (142 pruebas).
+el pipeline general, el **diagnóstico** y el **registro manual** (163 pruebas).
 
 ## 15. Datos de ejemplo
 

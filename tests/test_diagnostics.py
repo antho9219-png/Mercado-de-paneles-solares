@@ -89,7 +89,7 @@ class TestFormatReport:
     def test_incluye_motivo_y_alternativa(self, tmp_path):
         cfg = Config(data_dir=tmp_path)
         report = format_report(run_diagnostics(cfg), cfg)
-        assert "POR QUE NO SE RECOPILAN ANUNCIOS REALES" in report
+        assert "POR QUE NO SE RECOPILAN ANUNCIOS AUTOMATICAMENTE" in report
         assert "main.py import" in report
         assert "Resumen:" in report
 

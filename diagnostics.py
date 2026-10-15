@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import importlib
 import logging
+import os
 import platform
 import shutil
 import sys
@@ -63,7 +64,25 @@ def _version(paquete: str) -> str:
 # ---------------------------------------------------------------------------
 # Comprobaciones sin red
 # ---------------------------------------------------------------------------
+def _find_git() -> Optional[str]:
+    """Localiza ``git`` en el PATH o en las ubicaciones típicas de Windows."""
+    found = shutil.which("git")
+    if found:
+        return found
+    candidatos = (
+        r"C:\Program Files\Git\cmd\git.exe",
+        r"C:\Program Files (x86)\Git\cmd\git.exe",
+        os.path.expanduser(r"~\AppData\Local\Programs\Git\cmd\git.exe"),
+    )
+    for candidato in candidatos:
+        if Path(candidato).exists():
+            return candidato
+    return None
+
+
 def _check_entorno() -> list[Check]:
+    git = _find_git()
+    repo = Path(__file__).resolve().parent / ".git"
     return [
         Check(
             "python",
@@ -72,8 +91,15 @@ def _check_entorno() -> list[Check]:
         ),
         Check(
             "git",
-            "OK" if shutil.which("git") else "INFO",
-            "instalado" if shutil.which("git") else "no instalado (no se pueden crear commits)",
+            "OK" if git else "INFO",
+            f"instalado ({git})" if git else "no encontrado",
+        ),
+        Check(
+            "git:repositorio",
+            "OK" if repo.exists() else "INFO",
+            "inicializado (.git presente)"
+            if repo.exists()
+            else "sin repositorio local (ejecuta 'git init -b main')",
         ),
     ]
 
@@ -166,6 +192,7 @@ def _check_datos(config: Config) -> list[Check]:
     if "fuente" in frame.columns:
         fuentes = frame["fuente"].fillna("(desconocido)").value_counts().to_dict()
         solo_ejemplo = all(str(f).lower() == "ejemplo" for f in fuentes)
+        reales = sum(v for f, v in fuentes.items() if str(f).lower() != "ejemplo")
         checks.append(
             Check(
                 "datos:fuente",
@@ -173,12 +200,20 @@ def _check_datos(config: Config) -> list[Check]:
                 ", ".join(f"{k}={v}" for k, v in fuentes.items()),
             )
         )
-        if solo_ejemplo:
+        checks.append(
+            Check(
+                "datos:reales",
+                "OK" if reales else "AVISO",
+                f"{reales} registros con fuente distinta de 'ejemplo'",
+            )
+        )
+        if not reales:
             checks.append(
                 Check(
                     "datos:aviso",
                     "AVISO",
-                    "TODOS los registros son de EJEMPLO (sintéticos), no anuncios reales",
+                    "TODOS los registros son de EJEMPLO (sintéticos), no anuncios reales: "
+                    "usa 'python main.py add' o 'python main.py import'",
                 )
             )
     return checks
@@ -319,11 +354,12 @@ def format_report(checks: list[Check], config: Config) -> str:
     motivo = explicar_bloqueo(config)
     lineas.append("")
     if motivo:
-        lineas.append("POR QUE NO SE RECOPILAN ANUNCIOS REALES:")
+        lineas.append("POR QUE NO SE RECOPILAN ANUNCIOS AUTOMATICAMENTE:")
         lineas.append(f"  {motivo}")
-        lineas.append(
-            "  Alternativa autorizada: python main.py import --input <archivo.csv|json>"
-        )
+        lineas.append("  Alternativas autorizadas para conseguir datos:")
+        lineas.append("    * Registro manual: python main.py add --interactive")
+        lineas.append("    * Importar CSV/JSON propio: python main.py import --input <archivo>")
+        lineas.append("    * Plantilla de campos: python main.py template")
     else:
         lineas.append(
             "El scraping esta AUTORIZADO. Ejecuta: python main.py scrape --max-items 30"

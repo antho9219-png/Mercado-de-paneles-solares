@@ -7,6 +7,7 @@ Subcomandos disponibles:
     diagnose   Explica por qué se recopilan (o no) anuncios reales.
     scrape     Ejecuta el scraping AUTORIZADO (desactivado por defecto).
     import     Importa anuncios desde CSV/JSON obtenidos legítimamente.
+    add        Registra manualmente UN anuncio (alternativa autorizada).
     template   Crea una plantilla CSV para aportar datos propios autorizados.
     analyze    Muestra estadísticas y calidad de los datos.
     visualize  Genera gráficos PNG (opcional, requiere matplotlib).
@@ -14,6 +15,9 @@ Subcomandos disponibles:
 Ejemplos:
     python main.py diagnose                 # ¿por qué hay 0 anuncios reales?
     python main.py diagnose --online        # además comprueba robots.txt y el sitio
+    python main.py add -i                   # registrar un anuncio manualmente
+    python main.py add --precio 250 --moneda USD --potencia "550 W" \
+        --municipio Playa --tipo-producto "panel solar" --fuente registro_manual
     python main.py template                 # plantilla CSV para tus propios datos
     python main.py import --input data/examples/ejemplo_paneles_habana.csv
     python main.py analyze
@@ -56,6 +60,7 @@ from scraper import (
 )
 from storage import (
     SPANISH_COLUMNS,
+    load_csv,
     load_records,
     save_csv,
     save_csv_spanish,
@@ -171,6 +176,76 @@ def cmd_template(args: argparse.Namespace, config: Config) -> int:
     print(
         "Nota: solo incluye datos que tengas derecho a tratar. No añadas "
         "datos personales de terceros."
+    )
+    return 0
+
+
+def cmd_add(args: argparse.Namespace, config: Config) -> int:
+    """
+    Registra **manualmente** un anuncio (vía autorizada, sin scraping).
+
+    Añade el registro al archivo crudo (``data/raw``) y regenera el archivo
+    limpio (``data/processed/``). Solo guarda lo que el usuario aporta: no
+    inventa ningún dato y etiqueta el origen con ``fuente``.
+    """
+    from manual import build_manual_record, has_data, prompt_record
+
+    if args.interactive:
+        record = prompt_record()
+    else:
+        record = build_manual_record(
+            title=args.titulo,
+            description=args.descripcion,
+            price_raw=args.precio,
+            currency=args.moneda,
+            power_raw=args.potencia,
+            power_w=args.potencia_w,
+            brand=args.marca,
+            modelo=args.modelo,
+            product_type=args.tipo_producto,
+            alcance=args.alcance,
+            vida_util=args.vida_util,
+            garantia=args.garantia,
+            municipality=args.municipio,
+            provincia=args.provincia,
+            url=args.url,
+            date_published=args.fecha_publicacion,
+            ad_id=args.id,
+            source=args.fuente,
+        )
+
+    if not has_data(record):
+        print("Error: no indicaste ningún dato del anuncio.", file=sys.stderr)
+        print(
+            "Ejemplo:\n"
+            "  python main.py add --precio 250 --moneda USD --potencia \"550 W\" \\\n"
+            "      --marca Jinko --municipio Playa --tipo-producto \"panel solar\"\n"
+            "Modo guiado: python main.py add --interactive",
+            file=sys.stderr,
+        )
+        return 2
+
+    existentes = load_csv(config.raw_csv_path) if Path(config.raw_csv_path).exists() else []
+    crudos = deduplicate(stamp_collection(list(existentes) + [record]))
+    procesados = process_raw_records(crudos)
+
+    raw_path = save_raw(crudos, config)
+    processed_path = save_processed(procesados, config)
+    csv_path, json_path = save_outputs(procesados, config)
+
+    print("=" * 60)
+    print("REGISTRO MANUAL DE ANUNCIO")
+    print("=" * 60)
+    print(f"  Registro añadido    : {record.get('title') or record.get('price_raw') or '(sin título)'}")
+    print(f"  Fuente              : {record.get('source')}")
+    print(f"  Crudos (data/raw)   : {len(crudos)} registros -> {raw_path}")
+    print(f"  Limpios (processed) : {len(procesados)} registros -> {processed_path}")
+    print(f"  CSV/JSON            : {csv_path} | {json_path}")
+    print("\n--- Registros por fuente (origen de los datos) ---")
+    print(count_by(procesados, "source").to_string(index=False))
+    print(
+        "\nRecuerda: la fiabilidad del dato es la de su fuente. La columna "
+        "'fuente' distingue el registro manual de los datos de ejemplo."
     )
     return 0
 
@@ -374,6 +449,39 @@ def build_parser() -> argparse.ArgumentParser:
         "--output", default="plantilla_anuncios.csv", help="Ruta del CSV a crear."
     )
     p_tpl.set_defaults(func=cmd_template)
+
+    p_add = sub.add_parser(
+        "add",
+        help="Registra manualmente un anuncio (vía autorizada, sin scraping).",
+    )
+    p_add.add_argument("-i", "--interactive", action="store_true",
+                       help="Pregunta los campos uno a uno por consola.")
+    p_add.add_argument("--titulo", help="Título del anuncio.")
+    p_add.add_argument("--descripcion", help="Descripción (texto del vendedor).")
+    p_add.add_argument("--precio", help="Precio anunciado (texto o número).")
+    p_add.add_argument("--moneda", help="Moneda del precio (USD, CUP, MLC, EUR).")
+    p_add.add_argument("--potencia", help="Potencia tal como se anuncia (p. ej. '550 W').")
+    p_add.add_argument(
+        "--potencia-w", dest="potencia_w", type=float, default=None,
+        help="Potencia en vatios (número).",
+    )
+    p_add.add_argument("--marca", help="Marca.")
+    p_add.add_argument("--modelo", help="Modelo.")
+    p_add.add_argument("--vida-util", dest="vida_util", help="Vida útil anunciada.")
+    p_add.add_argument("--garantia", help="Garantía anunciada.")
+    p_add.add_argument("--municipio", help="Municipio de La Habana.")
+    p_add.add_argument("--provincia", default=None, help="Provincia (por defecto, derivada).")
+    p_add.add_argument("--tipo-producto", dest="tipo_producto", help="Tipo de producto.")
+    p_add.add_argument("--alcance", help="Alcance del precio (panel individual, sistema...).")
+    p_add.add_argument("--url", help="URL del anuncio (opcional).")
+    p_add.add_argument(
+        "--fecha-publicacion", dest="fecha_publicacion", help="Fecha de publicación (opcional)."
+    )
+    p_add.add_argument("--id", default=None, help="Identificador propio (opcional).")
+    p_add.add_argument(
+        "--fuente", default="registro_manual", help="Fuente de los datos (columna 'fuente')."
+    )
+    p_add.set_defaults(func=cmd_add)
 
     p_scrape = sub.add_parser("scrape", help="Scraping autorizado (desactivado por defecto).")
     p_scrape.add_argument("--terms", nargs="*", help="Términos de búsqueda a usar.")
