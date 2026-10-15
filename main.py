@@ -10,7 +10,8 @@ Subcomandos disponibles:
     scrape     Ejecuta el scraping AUTORIZADO (desactivado por defecto).
     import     Importa anuncios desde CSV/JSON obtenidos legítimamente.
     add        Registra manualmente UN anuncio (alternativa autorizada).
-    template   Crea una plantilla CSV para aportar datos propios autorizados.
+    registrar  Incorpora anuncios reales desde la plantilla CSV (valida y deduplica).
+    template   Crea una plantilla CSV (con --anuncios, la de anuncios reales).
     analyze    Muestra estadísticas y calidad de los datos.
     visualize  Genera gráficos PNG (opcional, requiere matplotlib).
 
@@ -156,16 +157,37 @@ def cmd_diagnose(args: argparse.Namespace, config: Config) -> int:
 
 def cmd_template(args: argparse.Namespace, config: Config) -> int:
     """
-    Escribe una plantilla CSV con las columnas de entrega (en español).
+    Escribe una plantilla CSV para registrar datos aportados por el usuario.
 
-    Sirve para que el usuario aporte sus propios datos autorizados
-    (por ejemplo, exportados a mano de una fuente con permiso) e importarlos
-    con ``python main.py import --input <archivo>``.
+    Con ``--anuncios`` genera la plantilla de **anuncios reales** (11 columnas:
+    ``fecha_consulta, precio, moneda, potencia_w, marca, modelo, vida_util,
+    garantia, municipio, url_fuente, observaciones``), pensada para transcribir
+    anuncios a mano. Sin ese flag genera la plantilla con todas las columnas de
+    entrega, para importar con ``python main.py import --input <archivo>``.
     """
+    if args.anuncios:
+        from anuncios import COLUMNAS_ANUNCIOS, save_template
+
+        path = Path(args.output) if args.output else Path("plantilla_anuncios_reales.csv")
+        path = save_template(path)
+        print(f"Plantilla de anuncios creada: {path}")
+        print(f"Columnas ({len(COLUMNAS_ANUNCIOS)}): {', '.join(COLUMNAS_ANUNCIOS)}")
+        print(
+            "\nRellena una fila por anuncio real y deja vacío lo que no sepas.\n"
+            "Cada fila NECESITA una fuente verificable en 'url_fuente'.\n"
+            "Después ejecuta:\n"
+            f"    python main.py registrar --input {path}"
+        )
+        print(
+            "\nNota: solo incluye datos que tengas derecho a tratar. No añadas "
+            "datos personales de terceros."
+        )
+        return 0
+
     from storage import records_to_spanish_dataframe
 
     columns = list(SPANISH_COLUMNS.values())
-    path = Path(args.output)
+    path = Path(args.output) if args.output else Path("plantilla_anuncios.csv")
     path.parent.mkdir(parents=True, exist_ok=True)
 
     frame = records_to_spanish_dataframe([])  # cabecera vacía con el orden correcto
@@ -216,6 +238,7 @@ def cmd_add(args: argparse.Namespace, config: Config) -> int:
             date_published=args.fecha_publicacion,
             ad_id=args.id,
             source=args.fuente,
+            notes=args.observaciones,
         )
 
     if not has_data(record):
@@ -250,6 +273,98 @@ def cmd_add(args: argparse.Namespace, config: Config) -> int:
     print(
         "\nRecuerda: la fiabilidad del dato es la de su fuente. La columna "
         "'fuente' distingue el registro manual de los datos de ejemplo."
+    )
+    return 0
+
+
+def cmd_registrar(args: argparse.Namespace, config: Config) -> int:
+    """
+    Incorpora **anuncios reales** desde la plantilla CSV de registro manual.
+
+    Reglas:
+        * Cada fila debe tener una **fuente verificable** (``url_fuente``); las
+          que no la tengan se **rechazan** (nunca se inventa la fuente).
+        * **No se duplican** anuncios: se comparan por URL/ID con los ya
+          registrados y con el resto del archivo.
+        * Los anuncios se guardan **solo** en ``data/raw`` y ``data/processed``;
+          este comando nunca toca los datos abiertos energéticos.
+    """
+    from anuncios import is_verifiable_source, merge_anuncios, read_rows, row_to_record
+
+    ruta = Path(args.input)
+    try:
+        filas = read_rows(ruta)
+    except FileNotFoundError:
+        print(f"Error: no existe el archivo {ruta}", file=sys.stderr)
+        return 1
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
+
+    if not filas:
+        print(f"La plantilla {ruta} no contiene filas.", file=sys.stderr)
+        return 1
+
+    validos: list[dict] = []
+    rechazados: list[dict] = []
+    for indice, fila in enumerate(filas, start=2):  # la fila 1 es la cabecera
+        if is_verifiable_source(fila.get("url_fuente")):
+            validos.append(row_to_record(fila, source=args.fuente))
+        else:
+            rechazados.append(
+                {"fila": indice, "url_fuente": fila.get("url_fuente") or ""}
+            )
+
+    existentes = (
+        load_csv(config.raw_csv_path) if Path(config.raw_csv_path).exists() else []
+    )
+    crudos, duplicados = merge_anuncios(existentes, stamp_collection(validos))
+    procesados = process_raw_records(crudos)
+
+    print("=" * 60)
+    print("REGISTRO MANUAL DE ANUNCIOS (desde plantilla)")
+    print("=" * 60)
+    print(f"  Plantilla             : {ruta}")
+    print(f"  Filas leídas          : {len(filas)}")
+    print(f"  Con fuente (aceptadas): {len(validos)}")
+    print(f"  Sin fuente (rechazadas): {len(rechazados)}")
+    print(f"  Duplicadas (ignoradas): {len(duplicados)}")
+
+    if rechazados:
+        print("\n--- Filas RECHAZADAS por no tener fuente verificable ---")
+        for item in rechazados:
+            print(f"  fila {item['fila']}: url_fuente = '{item['url_fuente']}'")
+        print(
+            "Añade la URL o el dominio donde viste el anuncio y vuelve a "
+            "ejecutar 'registrar'."
+        )
+
+    if duplicados:
+        print("\n--- Filas DUPLICADAS (ya registradas; se ignoran) ---")
+        for record in duplicados:
+            print(f"  {record.get('url') or record.get('ad_id') or '(sin URL)'}")
+
+    if not validos:
+        print(
+            "\nNinguna fila tiene fuente verificable: no se registró ningún "
+            "anuncio.",
+            file=sys.stderr,
+        )
+        return 3
+
+    raw_path = save_raw(crudos, config)
+    processed_path = save_processed(procesados, config)
+    csv_path, json_path = save_outputs(procesados, config)
+
+    print(f"\n  Total anuncios : {len(procesados)} -> {processed_path}")
+    print(f"  Crudos         : {raw_path}")
+    print(f"  CSV/JSON       : {csv_path} | {json_path}")
+    print("\n--- Anuncios por fuente (origen de los datos) ---")
+    print(count_by(procesados, "source").to_string(index=False))
+    print(
+        "\nLos anuncios se guardan SOLO en data/raw y data/processed.\n"
+        "Los datos abiertos (contexto) viven aparte: "
+        f"{Path(config.opendata_csv_path).name}."
     )
     return 0
 
@@ -304,7 +419,7 @@ def cmd_opendata(args: argparse.Namespace, config: Config) -> int:
         )
         return 1
 
-    salida = Path(args.output) if args.output else config.data_dir / "raw" / "opendata_banco_mundial.csv"
+    salida = Path(args.output) if args.output else config.opendata_csv_path
     ruta = save_opendata_csv(registros, salida)
 
     anios = sorted({str(r["anio"]) for r in registros if r.get("anio")})
@@ -541,11 +656,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_tpl = sub.add_parser(
         "template",
-        help="Crea una plantilla CSV (columnas en español) para importar tus datos.",
+        help="Crea una plantilla CSV: anuncios reales (--anuncios) o datos a importar.",
     )
     p_tpl.add_argument(
-        "--output", default="plantilla_anuncios.csv", help="Ruta del CSV a crear."
+        "--anuncios",
+        action="store_true",
+        help="Plantilla de anuncios reales (11 columnas) para registrar a mano.",
     )
+    p_tpl.add_argument("--output", default=None, help="Ruta del CSV a crear.")
     p_tpl.set_defaults(func=cmd_template)
 
     p_add = sub.add_parser(
@@ -573,6 +691,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_add.add_argument("--alcance", help="Alcance del precio (panel individual, sistema...).")
     p_add.add_argument("--url", help="URL del anuncio (opcional).")
     p_add.add_argument(
+        "--observaciones", help="Observaciones del investigador (opcional)."
+    )
+    p_add.add_argument(
         "--fecha-publicacion", dest="fecha_publicacion", help="Fecha de publicación (opcional)."
     )
     p_add.add_argument("--id", default=None, help="Identificador propio (opcional).")
@@ -580,6 +701,20 @@ def build_parser() -> argparse.ArgumentParser:
         "--fuente", default="registro_manual", help="Fuente de los datos (columna 'fuente')."
     )
     p_add.set_defaults(func=cmd_add)
+
+    p_reg = sub.add_parser(
+        "registrar",
+        help="Incorpora anuncios reales desde la plantilla CSV (valida fuente y duplicados).",
+    )
+    p_reg.add_argument(
+        "--input", required=True, help="CSV con la plantilla de anuncios rellenada."
+    )
+    p_reg.add_argument(
+        "--fuente",
+        default="registro_manual",
+        help="Fuente de los datos (columna 'fuente').",
+    )
+    p_reg.set_defaults(func=cmd_registrar)
 
     p_scrape = sub.add_parser("scrape", help="Scraping autorizado (desactivado por defecto).")
     p_scrape.add_argument("--terms", nargs="*", help="Términos de búsqueda a usar.")

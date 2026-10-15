@@ -50,7 +50,10 @@ CAMPOS_INTERACTIVOS: tuple[tuple[str, str], ...] = (
 )
 
 # Campos que se consideran "dato del anuncio" (excluyen metadatos).
-_CAMPOS_DATO = tuple(f for f in FIELDS if f not in {"collected_at", "source"})
+# ``notes`` son observaciones del investigador, no un dato del anuncio.
+_CAMPOS_DATO = tuple(
+    f for f in FIELDS if f not in {"collected_at", "source", "notes"}
+)
 
 
 def _now_iso() -> str:
@@ -89,6 +92,7 @@ def build_manual_record(
     ad_id: Any = None,
     source: Any = FUENTE_POR_DEFECTO,
     collected_at: Any = None,
+    notes: Any = None,
 ) -> dict:
     """
     Construye un registro **crudo** (esquema interno) a partir de datos aportados.
@@ -130,6 +134,8 @@ def build_manual_record(
             "date_published": clean_text(date_published),
             "collected_at": clean_text(collected_at) or _now_iso(),
             "source": clean_text(source) or FUENTE_POR_DEFECTO,
+            # Observaciones del investigador: texto libre, nunca se inventa.
+            "notes": clean_multiline(notes),
         }
     )
     return record

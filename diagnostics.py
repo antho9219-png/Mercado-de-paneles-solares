@@ -213,7 +213,8 @@ def _check_datos(config: Config) -> list[Check]:
                     "datos:aviso",
                     "AVISO",
                     "TODOS los registros son de EJEMPLO (sintéticos), no anuncios reales: "
-                    "usa 'python main.py add' o 'python main.py import'",
+                    "usa 'python main.py template --anuncios' + 'python main.py registrar', "
+                    "'python main.py add' o 'python main.py import'",
                 )
             )
     return checks
@@ -357,9 +358,10 @@ def format_report(checks: list[Check], config: Config) -> str:
         lineas.append("POR QUE NO SE RECOPILAN ANUNCIOS AUTOMATICAMENTE:")
         lineas.append(f"  {motivo}")
         lineas.append("  Alternativas autorizadas para conseguir datos:")
-        lineas.append("    * Registro manual: python main.py add --interactive")
+        lineas.append("    * Plantilla de anuncios reales: python main.py template --anuncios")
+        lineas.append("    * Registrar anuncios desde la plantilla: python main.py registrar --input <csv>")
+        lineas.append("    * Registro manual (uno a uno): python main.py add --interactive")
         lineas.append("    * Importar CSV/JSON propio: python main.py import --input <archivo>")
-        lineas.append("    * Plantilla de campos: python main.py template")
         lineas.append("    * Datos abiertos (contexto): python main.py opendata")
         lineas.append("    * Ver fuentes y licencias: python main.py fuentes")
     else:

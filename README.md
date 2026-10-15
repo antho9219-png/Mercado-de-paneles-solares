@@ -70,7 +70,8 @@ Las columnas de entrega (`data/raw` y `data/processed`) están **en español**:
 | `fecha_publicacion` | Fecha de publicación (ISO 8601) | No |
 | `url_anuncio` | URL pública del anuncio | No |
 | `fecha_recopilacion` | Fecha/hora de recopilación (UTC) | Sí |
-| `fuente` | `revolico`, `import` o `ejemplo` | No |
+| `fuente` | `revolico`, `import`, `registro_manual` o `ejemplo` | No |
+| `observaciones` | Observaciones del investigador (texto libre, sin derivar) | No |
 
 > El esquema interno del código usa nombres en inglés; la traducción a las
 > columnas de entrega está centralizada en `storage.SPANISH_COLUMNS`.
@@ -129,6 +130,14 @@ python main.py import --input data/examples/ejemplo_paneles_habana.csv
 #   -> data/raw/paneles_solares_habana.csv
 #   -> data/processed/paneles_solares_habana_limpio.csv
 #   -> output/paneles_solares.csv | .json   (esquema interno)
+
+# --- Anuncios REALES: plantilla + registro (valida fuente y evita duplicados) ---
+python main.py template --anuncios
+#   -> plantilla_anuncios_reales.csv  (11 columnas)
+#   Rellénala (deja vacío lo que no sepas) y ejecuta:
+python main.py registrar --input plantilla_anuncios_reales.csv
+#   - rechaza las filas sin 'url_fuente' (fuente verificable)
+#   - ignora los anuncios ya registrados (duplicados)
 
 # --- Plantilla CSV en español para aportar tus propios datos ---
 python main.py template --output plantilla_anuncios.csv
@@ -198,6 +207,10 @@ términos de uso de Revolico.
 1. **Si tienes autorización / base legítima** para el acceso automatizado,
    define ambas variables y ejecuta `python main.py scrape --max-items 30`.
 2. **Si no la tienes** (caso habitual), usa una de estas vías autorizadas:
+   - **Plantilla + registro:** `python main.py template --anuncios` crea
+     `plantilla_anuncios_reales.csv`; rellénala y ejecuta
+     `python main.py registrar --input plantilla_anuncios_reales.csv`
+     (valida que cada fila tenga fuente y evita duplicados).
    - **Registro manual:** `python main.py add --interactive` (o con flags) para
      anotar un anuncio que observaste legítimamente.
    - **Importación:** `python main.py template` genera la plantilla con las
@@ -247,6 +260,59 @@ Reglas del comando:
 | `municipio` | Municipio de La Habana (normalizado) |
 | `tipo_producto` | panel solar, batería, inversor, kit… |
 | `fuente` | Origen del dato |
+
+| `tipo_producto` | panel solar, batería, inversor, kit… |
+| `fuente` | Origen del dato |
+
+### Registro de anuncios reales desde plantilla (`template --anuncios` + `registrar`)
+
+Para anotar **varios** anuncios reales de una vez, usa la plantilla específica:
+
+```bash
+python main.py template --anuncios          # crea plantilla_anuncios_reales.csv
+# ... rellena una fila por anuncio (Excel, LibreOffice, etc.) ...
+python main.py registrar --input plantilla_anuncios_reales.csv
+```
+
+La plantilla tiene **exactamente** estas 11 columnas:
+
+| Columna | Significado |
+|---|---|
+| `fecha_consulta` | Fecha en que consultaste el anuncio |
+| `precio` | Precio tal como aparece (p. ej. `250`, `250 USD`, `15.000 CUP`) |
+| `moneda` | `USD`, `CUP`, `MLC`, `EUR` (no se convierten) |
+| `potencia_w` | Potencia (p. ej. `550`, `550 W`, `12 kW`) |
+| `marca` | Marca |
+| `modelo` | Modelo |
+| `vida_util` | Vida útil anunciada |
+| `garantia` | Garantía anunciada |
+| `municipio` | Municipio de La Habana |
+| `url_fuente` | URL (o dominio) donde viste el anuncio — **obligatorio** |
+| `observaciones` | Texto libre (título/descripción del anuncio, notas…) |
+
+Reglas de `registrar`:
+
+* **No inventa nada:** los campos vacíos se quedan vacíos.
+* **Exige fuente verificable:** las filas sin `url_fuente` (o con algo que no
+  parece una URL, como `"pendiente"`) se **rechazan** y el comando lo informa.
+  Código de salida `3` si **ninguna** fila tiene fuente; en ese caso no se
+  escribe ningún archivo.
+* **Evita duplicados:** compara por URL (y, si falta, por ID) tanto con los
+  anuncios ya registrados como dentro del propio archivo; los duplicados se
+  ignoran y se listan.
+* `observaciones` se guarda en la columna de entrega `observaciones` y, además,
+  se usa para deducir campos como `tipo_producto` (p. ej. «panel solar»).
+* La columna `fuente` queda como `registro_manual`.
+
+**Separación de datos (importante):**
+
+| Tipo de dato | Archivo | Contenido |
+|---|---|---|
+| **Anuncios comerciales** (reales o de ejemplo) | `data/raw/paneles_solares_habana.csv` y `data/processed/paneles_solares_habana_limpio.csv` | precios, marcas, modelos… de anuncios |
+| **Datos abiertos energéticos/económicos** | `data/raw/opendata_banco_mundial.csv` | estadísticas agregadas (Banco Mundial) |
+
+`registrar` (y `add`/`import`) **nunca** escriben en el archivo de datos abiertos;
+`opendata` **nunca** escribe en el de anuncios. Así los dos conjuntos no se mezclan.
 
 ### Datos originales vs. datos procesados
 
@@ -299,11 +365,12 @@ mercado-solar-cuba/
 │   └── processed/                 # Datos limpios (generado; NO se versiona)
 ├── notebooks/
 │   └── analisis_mercado_solar_habana.ipynb
-├── tests/                         # 176 pruebas automatizadas
+├── tests/                         # 205 pruebas automatizadas
 ├── config.py                      # Esquema de campos y configuración
 ├── municipios.py                  # Normalización de los 15 municipios de La Habana
 ├── cleaner.py                     # Limpieza y derivación de campos
-├── manual.py                      # Registro manual de anuncios (vía autorizada)
+├── manual.py                      # Registro manual de un anuncio (vía autorizada)
+├── anuncios.py                    # Plantilla + registro de anuncios reales (valida y deduplica)
 ├── sources.py                     # Catálogo de fuentes y su estado legal
 ├── opendata.py                    # Datos abiertos reutilizables (Banco Mundial)
 ├── parser.py                      # Extracción del estado Next.js/Apollo
@@ -311,7 +378,8 @@ mercado-solar-cuba/
 ├── storage.py                     # CSV/JSON (inglés interno y español de entrega)
 ├── diagnostics.py                 # Diagnóstico: ¿por qué 0 anuncios reales?
 ├── visualization.py               # Gráficos PNG
-├── main.py                        # CLI: diagnose / fuentes / opendata / add / template / scrape / import / analyze / visualize
+├── main.py                        # CLI: diagnose / fuentes / opendata / add / registrar / template / scrape / import / analyze / visualize
+├── plantilla_anuncios_reales.csv  # Plantilla de registro manual de anuncios (11 columnas)
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
@@ -436,8 +504,9 @@ python -m pytest -q
 
 Cubren precios, potencias, municipios, vida útil/garantía, modelo, alcance,
 valores ausentes, duplicados, filtro por provincia, exportación en español,
-el pipeline general, el **diagnóstico**, el **registro manual**, el **catálogo de
-fuentes** y los **datos abiertos** (176 pruebas).
+el pipeline general, el **diagnóstico**, el **registro manual**, el **registro
+de anuncios reales** (plantilla, fuente verificable y deduplicación), el
+**catálogo de fuentes** y los **datos abiertos** (205 pruebas).
 
 ## 15. Datos de ejemplo
 

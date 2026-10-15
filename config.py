@@ -58,6 +58,7 @@ FIELDS: tuple[str, ...] = (
     "url",               # URL del anuncio
     "collected_at",      # Fecha de recopilación (ISO 8601, UTC)
     "source",            # Origen: "revolico", "import" o "ejemplo"
+    "notes",             # Observaciones del investigador (texto libre, no derivado)
 )
 
 # Campos que se consideran indispensables para que un registro sea "completo".
@@ -181,6 +182,9 @@ class Config:
     processed_csv_name: str = "paneles_solares_habana_limpio.csv"
     csv_name: str = "paneles_solares.csv"
     json_name: str = "paneles_solares.json"
+    # Datos ABIERTOS (contexto). Se guardan en un archivo aparte para no
+    # mezclarlos nunca con los anuncios comerciales.
+    opendata_csv_name: str = "opendata_banco_mundial.csv"
 
     # --- Registro ---
     log_level: str = "INFO"
@@ -227,6 +231,9 @@ class Config:
             ),
             csv_name=_env_str("CSV_NAME", "paneles_solares.csv"),
             json_name=_env_str("JSON_NAME", "paneles_solares.json"),
+            opendata_csv_name=_env_str(
+                "OPENDATA_CSV_NAME", "opendata_banco_mundial.csv"
+            ),
             log_level=_env_str("LOG_LEVEL", "INFO").upper(),
             search_terms=search_terms,
         )
@@ -258,6 +265,16 @@ class Config:
     def processed_csv_path(self) -> Path:
         """Ruta del CSV procesado: data/processed/*_limpio.csv."""
         return self.processed_dir / self.processed_csv_name
+
+    @property
+    def opendata_csv_path(self) -> Path:
+        """
+        Ruta del CSV de datos ABIERTOS (contexto energético/económico).
+
+        Es un archivo **distinto** del de anuncios: así los datos abiertos y
+        los anuncios comerciales nunca se mezclan.
+        """
+        return self.raw_dir / self.opendata_csv_name
 
     def ensure_directories(self) -> None:
         """Crea los directorios de datos/salida/logs si no existen."""

@@ -84,16 +84,23 @@ _COLUMN_ALIASES: dict[str, str] = {
     "fecha_publicacion": "date_published",
     "date_published": "date_published",
     "fecha_recopilacion": "collected_at",
+    "fecha_consulta": "collected_at",
     "collected_at": "collected_at",
     # enlace
     "url": "url",
     "enlace": "url",
     "link": "url",
     "url_anuncio": "url",
+    "url_fuente": "url",
     # origen
     "source": "source",
     "origen": "source",
     "fuente": "source",
+    # observaciones del investigador
+    "observaciones": "notes",
+    "observacion": "notes",
+    "notas": "notes",
+    "notes": "notes",
 }
 
 # Posibles claves que envuelven la lista de registros en un JSON.
@@ -128,6 +135,7 @@ SPANISH_COLUMNS: dict[str, str] = {
     "url": "url_anuncio",
     "collected_at": "fecha_recopilacion",
     "source": "fuente",
+    "notes": "observaciones",
 }
 
 

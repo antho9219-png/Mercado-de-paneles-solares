@@ -494,7 +494,9 @@ def clean_record(record: dict) -> dict:
 
     # --- Texto combinado para derivar marca/modelo/tipo/vida útil/garantía ---
     search_text = " ".join(
-        str(x) for x in (record.get("title"), record.get("description")) if x
+        str(x)
+        for x in (record.get("title"), record.get("description"), record.get("notes"))
+        if x
     )
     result["brand"] = clean_text(record.get("brand")) or detect_brand(search_text)
     result["modelo"] = clean_text(record.get("modelo")) or detect_model(
@@ -521,4 +523,6 @@ def clean_record(record: dict) -> dict:
     result["date_published"] = clean_text(record.get("date_published"))
     result["collected_at"] = clean_text(record.get("collected_at"))
     result["source"] = clean_text(record.get("source")) or "import"
+    # Observaciones del investigador: se conservan tal cual (sin derivar nada).
+    result["notes"] = clean_multiline(record.get("notes"))
     return result
