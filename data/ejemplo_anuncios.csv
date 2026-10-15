@@ -1,0 +1,10 @@
+ad_id,title,description,price_raw,currency,url,date_published,province,municipality,category,source
+90001,Panel solar 550W Jinko,"Panel solar monocristalino 550 W, marca Jinko, nuevo.",250 USD,USD,https://example.org/item/panel-solar-550w-jinko-90001,2026-01-15T10:00:00+00:00,La Habana,Centro Habana,Plantas y Estaciones de Energía,import
+90002,Panel solar 450W,"Placa solar de 450 W ideal para casa.",15.000 CUP,CUP,https://example.org/item/panel-solar-450w-90002,2026-02-03T12:30:00+00:00,Villa Clara,Santa Clara,Plantas y Estaciones de Energía,import
+90003,Inversor Growatt 5kW híbrido,"Inversor híbrido Growatt de 5 kW con MPPT.",800 USD,USD,https://example.org/item/inversor-growatt-5kw-90003,2026-02-10T09:15:00+00:00,La Habana,Playa,Plantas y Estaciones de Energía,import
+90004,Batería Pylontech US3000,"Batería de litio Pylontech, 48V, 3.5 kWh.",1200 USD,USD,https://example.org/item/bateria-pylontech-us3000-90004,2026-02-12T18:45:00+00:00,Holguín,Holguín,Plantas y Estaciones de Energía,import
+90005,Kit solar 3kW completo,"Kit solar de 3 kW: 6 paneles, inversor y baterías.",3500 USD,USD,https://example.org/item/kit-solar-3kw-90005,2026-03-01T08:00:00+00:00,Santiago de Cuba,Santiago de Cuba,Plantas y Estaciones de Energía,import
+90001,Panel solar 550W Jinko (duplicado),"Copia para probar la deduplicación por URL.",250 USD,USD,https://example.org/item/panel-solar-550w-jinko-90001,2026-01-15T10:00:00+00:00,La Habana,Centro Habana,Plantas y Estaciones de Energía,import
+90007,Panel solar 0.45kW,"Panel solar de 0.45 kW, segunda mano.",160 USD,USD,https://example.org/item/panel-solar-045kw-90007,2026-03-05T14:20:00+00:00,Camagüey,Camagüey,Plantas y Estaciones de Energía,import
+90008,Panel solar sin precio,"Panel solar usado, precio a convenir.",,USD,https://example.org/item/panel-solar-sin-precio-90008,2026-03-07T16:00:00+00:00,Las Tunas,Las Tunas,Plantas y Estaciones de Energía,import
+90009,Panel solar sin URL,"Anuncio sin enlace para probar registros incompletos.",200 USD,USD,,2026-03-08T11:00:00+00:00,Matanzas,Matanzas,Plantas y Estaciones de Energía,import

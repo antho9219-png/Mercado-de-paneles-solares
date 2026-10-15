@@ -1,0 +1,14 @@
+# Dependencias del proyecto
+requests>=2.31
+beautifulsoup4>=4.12
+pandas>=2.0
+numpy>=1.24
+
+# Visualización y notebooks
+matplotlib>=3.7   # gráficos (visualization.py y notebook)
+seaborn>=0.13     # gráficos estadísticos (notebook)
+jupyter>=1.0      # ejecutar el notebook de análisis
+nbformat>=5.9     # crear/validar notebooks
+
+# Pruebas
+pytest>=7.4

@@ -1,0 +1,38 @@
+{
+  "proyecto": "Mercado de paneles solares (datos de EJEMPLO, no extraídos del sitio)",
+  "records": [
+    {
+      "id": "91001",
+      "titulo": "Panel solar 610W Longi",
+      "descripcion": "Panel bifacial Longi de 610 W, nuevo en caja.",
+      "precio": "290 USD",
+      "moneda": "USD",
+      "url": "https://example.org/item/panel-solar-610w-longi-91001",
+      "fecha": "2026-01-20T10:00:00+00:00",
+      "provincia": "La Habana",
+      "municipio": "Diez de Octubre"
+    },
+    {
+      "id": "91002",
+      "titulo": "Inversor MUST 5kW",
+      "descripcion": "Inversor MUST de 5 kW con cargador solar.",
+      "precio": "900 USD",
+      "moneda": "USD",
+      "url": "https://example.org/item/inversor-must-5kw-91002",
+      "fecha": "2026-02-25T10:00:00+00:00",
+      "provincia": "Holguín",
+      "municipio": "Holguín"
+    },
+    {
+      "id": "91003",
+      "titulo": "Panel solar 460W",
+      "descripcion": "Panel solar 460 W.",
+      "precio": "16.500 CUP",
+      "moneda": "CUP",
+      "url": "https://example.org/item/panel-solar-460w-91003",
+      "fecha": "2026-03-02T10:00:00+00:00",
+      "provincia": "Villa Clara",
+      "municipio": "Santa Clara"
+    }
+  ]
+}

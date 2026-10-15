@@ -1,0 +1,30 @@
+# Entornos y cachés
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Entorno definido por el usuario (no subir credenciales/datos locales)
+.env
+
+# Salidas generadas
+logs/
+output/
+
+# Datos recopilados: se evita publicar grandes volúmenes de datos.
+# Los directorios se conservan con un .gitkeep, pero su contenido no se sube.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Los datos de EJEMPLO (pequeños y claramente etiquetados) sí se versionan.
+!data/examples/
+!data/ejemplo_anuncios.csv
+!data/ejemplo_anuncios.json
+
+# Archivos temporales
+*.tmp
+*.bak
