@@ -110,6 +110,13 @@ necesarias.
 python main.py diagnose          # comprobaciones sin red (rápido, 0 peticiones)
 python main.py diagnose --online # + robots.txt y estructura actual (2 peticiones)
 
+# --- Fuentes y su estado legal (qué se puede reutilizar) ---
+python main.py fuentes
+
+# --- Datos abiertos y reutilizables (contexto, NO anuncios) ---
+python main.py opendata          # Banco Mundial (CC BY 4.0) para Cuba
+#   -> data/raw/opendata_banco_mundial.csv (fuente, URL y fecha en cada fila)
+
 # --- Registrar un anuncio a mano (vía autorizada) ---
 python main.py add --interactive             # modo guiado, campo por campo
 python main.py add \
@@ -249,6 +256,33 @@ Reglas del comando:
   campos derivados y normalizados (`precio_valor=250.0`, `potencia_w=550.0`,
   `municipio` normalizado, `alcance`, etc.).
 
+### Fuentes de datos y estado legal
+
+`python main.py fuentes` muestra el catálogo (`sources.py`). Resumen:
+
+| Fuente | Tipo | ¿Anuncios? | Reutilización | Acceso automatizado |
+|---|---|---|---|---|
+| Revolico | clasificados | Sí | **No** sin autorización escrita | No permitido |
+| Facebook Marketplace y similares | clasificados | Sí | No sin permiso | No |
+| Banco Mundial – datos abiertos | datos abiertos | No | **Sí** (CC BY 4.0) | Sí (API pública) |
+| IRENA – estadísticas | datos abiertos | No | **Sí** (CC BY 4.0) | Descarga |
+| Global Solar Atlas | datos abiertos | No | **Sí** (CC BY 4.0) | Descarga |
+| UN Comtrade | datos abiertos | No | Sí | Cuba no reporta HS 8541 (0 filas) |
+| Prensa (Directorio Cubano, d-cuba…) | editorial | No | No sin permiso | No recomendado |
+
+**Conclusión:** ninguna fuente de **anuncios** permite reutilizar su contenido sin
+autorización previa; las fuentes **abiertas** sí son reutilizables, pero contienen
+**estadísticas agregadas**, no listados con precio, marca o modelo.
+
+### Datos abiertos (contexto, no anuncios)
+
+`python main.py opendata` descarga del **API público del Banco Mundial**
+(licencia CC BY 4.0) varios indicadores de Cuba (acceso a la electricidad, cuota
+renovable, uso de energía, PIB per cápita) y los guarda en
+`data/raw/opendata_banco_mundial.csv`, **conservando la fuente, la URL y la fecha
+de recopilación** de cada registro. Son datos **reales y verificables**, pero de
+**contexto** del mercado: no contienen anuncios ni precios de paneles.
+
 ## 7. Estructura del repositorio
 
 ```
@@ -265,17 +299,19 @@ mercado-solar-cuba/
 │   └── processed/                 # Datos limpios (generado; NO se versiona)
 ├── notebooks/
 │   └── analisis_mercado_solar_habana.ipynb
-├── tests/                         # 163 pruebas automatizadas
+├── tests/                         # 176 pruebas automatizadas
 ├── config.py                      # Esquema de campos y configuración
 ├── municipios.py                  # Normalización de los 15 municipios de La Habana
 ├── cleaner.py                     # Limpieza y derivación de campos
 ├── manual.py                      # Registro manual de anuncios (vía autorizada)
+├── sources.py                     # Catálogo de fuentes y su estado legal
+├── opendata.py                    # Datos abiertos reutilizables (Banco Mundial)
 ├── parser.py                      # Extracción del estado Next.js/Apollo
 ├── analysis.py                    # Duplicados, incompletos y estadísticas
 ├── storage.py                     # CSV/JSON (inglés interno y español de entrega)
 ├── diagnostics.py                 # Diagnóstico: ¿por qué 0 anuncios reales?
 ├── visualization.py               # Gráficos PNG
-├── main.py                        # CLI: diagnose / add / template / scrape / import / analyze / visualize
+├── main.py                        # CLI: diagnose / fuentes / opendata / add / template / scrape / import / analyze / visualize
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
@@ -388,9 +424,9 @@ git branch -M main
 git push -u origin main
 ```
 
-> **Nota:** en el entorno donde se desarrolló este proyecto, `git` **no estaba
-> instalado**, por lo que **no se creó ningún commit ni se publicó nada**. Los
-> comandos anteriores están listos para ejecutarse cuando lo autorices.
+> **Nota:** en el entorno de desarrollo, `git` estaba instalado y el repositorio
+> local se inicializó en la rama `main`; **no se configuró ningún remoto ni se
+> publicó nada**. Los comandos anteriores quedan listos para cuando lo autorices.
 
 ## 14. Pruebas
 
@@ -400,7 +436,8 @@ python -m pytest -q
 
 Cubren precios, potencias, municipios, vida útil/garantía, modelo, alcance,
 valores ausentes, duplicados, filtro por provincia, exportación en español,
-el pipeline general, el **diagnóstico** y el **registro manual** (163 pruebas).
+el pipeline general, el **diagnóstico**, el **registro manual**, el **catálogo de
+fuentes** y los **datos abiertos** (176 pruebas).
 
 ## 15. Datos de ejemplo
 

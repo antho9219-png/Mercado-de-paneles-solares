@@ -5,6 +5,8 @@ Punto de entrada del programa (interfaz de línea de comandos).
 
 Subcomandos disponibles:
     diagnose   Explica por qué se recopilan (o no) anuncios reales.
+    fuentes    Catálogo de fuentes y su estado legal (qué se puede reutilizar).
+    opendata   Descarga datos ABIERTOS y reutilizables (contexto, no anuncios).
     scrape     Ejecuta el scraping AUTORIZADO (desactivado por defecto).
     import     Importa anuncios desde CSV/JSON obtenidos legítimamente.
     add        Registra manualmente UN anuncio (alternativa autorizada).
@@ -15,6 +17,8 @@ Subcomandos disponibles:
 Ejemplos:
     python main.py diagnose                 # ¿por qué hay 0 anuncios reales?
     python main.py diagnose --online        # además comprueba robots.txt y el sitio
+    python main.py fuentes                  # qué fuentes son reutilizables
+    python main.py opendata                 # datos abiertos del Banco Mundial (Cuba)
     python main.py add -i                   # registrar un anuncio manualmente
     python main.py add --precio 250 --moneda USD --potencia "550 W" \
         --municipio Playa --tipo-producto "panel solar" --fuente registro_manual
@@ -250,6 +254,76 @@ def cmd_add(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_fuentes(args: argparse.Namespace, config: Config) -> int:
+    """Muestra el catálogo de fuentes y su estado legal de reutilización."""
+    from sources import ad_level_sources, render_sources, reusable_sources
+
+    print("=" * 70)
+    print("FUENTES DE DATOS Y SU ESTADO LEGAL")
+    print("=" * 70)
+    print(render_sources())
+    print("-" * 70)
+    print(f"Fuentes reutilizables (con licencia abierta): {len(reusable_sources())}")
+    print(f"Fuentes a nivel de anuncio (listados):        {len(ad_level_sources())}")
+    print(
+        "\nNinguna fuente de ANUNCIOS permite reutilizar su contenido sin "
+        "autorización previa.\n"
+        "  * Datos de anuncios  -> 'python main.py add' (manual) o 'import' (con permiso).\n"
+        "  * Datos de contexto  -> 'python main.py opendata' (datos abiertos)."
+    )
+    return 0
+
+
+def cmd_opendata(args: argparse.Namespace, config: Config) -> int:
+    """
+    Descarga datos ABIERTOS y reutilizables (contexto, no anuncios).
+
+    Por defecto usa el API público del Banco Mundial (licencia CC BY 4.0) para
+    Cuba y guarda un CSV con la fuente, la URL y la fecha de recopilación.
+    """
+    from opendata import fetch_world_bank, save_opendata_csv
+
+    pais = args.pais or "CUB"
+    destinos = args.indicator or None
+    try:
+        registros = fetch_world_bank(destinos, pais)
+    except Exception as exc:  # red/servidor: se informa sin inventar datos
+        print(f"Error al descargar datos abiertos: {exc}", file=sys.stderr)
+        print(
+            "Comprueba tu conexión a Internet. El Banco Mundial expone una API "
+            "pública en https://api.worldbank.org.",
+            file=sys.stderr,
+        )
+        return 1
+
+    if not registros:
+        print(
+            "No se obtuvieron registros: el país o los indicadores no tienen datos "
+            "publicados. No se ha creado ningún archivo.",
+            file=sys.stderr,
+        )
+        return 1
+
+    salida = Path(args.output) if args.output else config.data_dir / "raw" / "opendata_banco_mundial.csv"
+    ruta = save_opendata_csv(registros, salida)
+
+    anios = sorted({str(r["anio"]) for r in registros if r.get("anio")})
+    indicadores = sorted({r["indicador_id"] for r in registros})
+    print("=" * 60)
+    print("DATOS ABIERTOS (contexto, NO son anuncios)")
+    print("=" * 60)
+    print(f"  Fuente        : {registros[0]['fuente']} (licencia {registros[0]['licencia']})")
+    print(f"  Pais          : {registros[0]['pais']} ({pais})")
+    print(f"  Indicadores   : {len(indicadores)} -> {', '.join(indicadores)}")
+    print(f"  Registros     : {len(registros)} (años {anios[0]}..{anios[-1]})")
+    print(f"  Archivo       : {ruta}")
+    print(
+        "\nAviso: son estadísticas agregadas del país (electricidad, energía, "
+        "economía).\nNO contienen anuncios, precios, marcas ni modelos de paneles."
+    )
+    return 0
+
+
 def cmd_import(args: argparse.Namespace, config: Config) -> int:
     """Importa datos desde CSV/JSON (vía autorizada, sin scraping)."""
     if not args.input:
@@ -440,6 +514,30 @@ def build_parser() -> argparse.ArgumentParser:
         "--term", default="panel solar", help="Término de búsqueda para la prueba en línea."
     )
     p_diag.set_defaults(func=cmd_diagnose)
+
+    p_fuentes = sub.add_parser(
+        "fuentes",
+        help="Muestra las fuentes de datos y su estado legal de reutilización.",
+    )
+    p_fuentes.set_defaults(func=cmd_fuentes)
+
+    p_open = sub.add_parser(
+        "opendata",
+        help="Descarga datos ABIERTOS y reutilizables (contexto, no anuncios).",
+    )
+    p_open.add_argument(
+        "--indicator",
+        action="append",
+        default=None,
+        help="Indicador del Banco Mundial (repetible). Por defecto, un conjunto para Cuba.",
+    )
+    p_open.add_argument("--pais", default="CUB", help="Código ISO3 del país (por defecto, CUB).")
+    p_open.add_argument(
+        "--output",
+        default=None,
+        help="CSV de salida (por defecto data/raw/opendata_banco_mundial.csv).",
+    )
+    p_open.set_defaults(func=cmd_opendata)
 
     p_tpl = sub.add_parser(
         "template",

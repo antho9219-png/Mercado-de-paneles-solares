@@ -360,6 +360,8 @@ def format_report(checks: list[Check], config: Config) -> str:
         lineas.append("    * Registro manual: python main.py add --interactive")
         lineas.append("    * Importar CSV/JSON propio: python main.py import --input <archivo>")
         lineas.append("    * Plantilla de campos: python main.py template")
+        lineas.append("    * Datos abiertos (contexto): python main.py opendata")
+        lineas.append("    * Ver fuentes y licencias: python main.py fuentes")
     else:
         lineas.append(
             "El scraping esta AUTORIZADO. Ejecuta: python main.py scrape --max-items 30"
