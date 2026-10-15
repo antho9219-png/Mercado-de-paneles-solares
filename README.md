@@ -114,6 +114,11 @@ python main.py diagnose --online # + robots.txt y estructura actual (2 peticione
 # --- Fuentes y su estado legal (qué se puede reutilizar) ---
 python main.py fuentes
 
+# --- Pedir autorización por escrito (genera un borrador; NO envía nada) ---
+python main.py solicitud
+python main.py solicitud --sitio revolico.com --solicitante "Tu nombre" \
+  --email "tu@correo.com" --output solicitud_revolico.txt
+
 # --- Datos abiertos y reutilizables (contexto, NO anuncios) ---
 python main.py opendata          # Banco Mundial (CC BY 4.0) para Cuba
 #   -> data/raw/opendata_banco_mundial.csv (fuente, URL y fecha en cada fila)
@@ -261,9 +266,6 @@ Reglas del comando:
 | `tipo_producto` | panel solar, batería, inversor, kit… |
 | `fuente` | Origen del dato |
 
-| `tipo_producto` | panel solar, batería, inversor, kit… |
-| `fuente` | Origen del dato |
-
 ### Registro de anuncios reales desde plantilla (`template --anuncios` + `registrar`)
 
 Para anotar **varios** anuncios reales de una vez, usa la plantilla específica:
@@ -329,9 +331,10 @@ Reglas de `registrar`:
 | Fuente | Tipo | ¿Anuncios? | Reutilización | Acceso automatizado |
 |---|---|---|---|---|
 | Revolico | clasificados | Sí | **No** sin autorización escrita | No permitido |
-| Facebook Marketplace y similares | clasificados | Sí | No sin permiso | No |
+| Facebook Marketplace y similares | clasificados | Sí | No sin permiso | No (Meta Content Library, solo investigadores aprobados) |
+| TecnoSolar Cuba (termómetro) | editorial-comercial | No (medianas) | No sin permiso | No recomendado |
 | Banco Mundial – datos abiertos | datos abiertos | No | **Sí** (CC BY 4.0) | Sí (API pública) |
-| IRENA – estadísticas | datos abiertos | No | **Sí** (CC BY 4.0) | Descarga |
+| IRENA – estadísticas | datos abiertos | No | **Sí** (CC BY 4.0) | **Sí** (API PxWeb) |
 | Global Solar Atlas | datos abiertos | No | **Sí** (CC BY 4.0) | Descarga |
 | UN Comtrade | datos abiertos | No | Sí | Cuba no reporta HS 8541 (0 filas) |
 | Prensa (Directorio Cubano, d-cuba…) | editorial | No | No sin permiso | No recomendado |
@@ -339,6 +342,12 @@ Reglas de `registrar`:
 **Conclusión:** ninguna fuente de **anuncios** permite reutilizar su contenido sin
 autorización previa; las fuentes **abiertas** sí son reutilizables, pero contienen
 **estadísticas agregadas**, no listados con precio, marca o modelo.
+
+**Investigación detallada (2026-10-15):** ver
+`docs/investigacion_fuentes_anuncios.md`. Las dos vías legítimas para conseguir
+anuncios reales son (1) la **transcripción manual** (`python main.py add` /
+`registrar`) y (2) la **autorización por escrito** del sitio, cuyo borrador genera
+`python main.py solicitud`.
 
 ### Datos abiertos (contexto, no anuncios)
 
@@ -365,12 +374,15 @@ mercado-solar-cuba/
 │   └── processed/                 # Datos limpios (generado; NO se versiona)
 ├── notebooks/
 │   └── analisis_mercado_solar_habana.ipynb
-├── tests/                         # 205 pruebas automatizadas
+├── docs/
+│   └── investigacion_fuentes_anuncios.md   # Fuentes investigadas y alternativas (2026-10-15)
+├── tests/                         # 217 pruebas automatizadas
 ├── config.py                      # Esquema de campos y configuración
 ├── municipios.py                  # Normalización de los 15 municipios de La Habana
 ├── cleaner.py                     # Limpieza y derivación de campos
 ├── manual.py                      # Registro manual de un anuncio (vía autorizada)
 ├── anuncios.py                    # Plantilla + registro de anuncios reales (valida y deduplica)
+├── permisos.py                    # Borrador de la carta de autorización (comando 'solicitud')
 ├── sources.py                     # Catálogo de fuentes y su estado legal
 ├── opendata.py                    # Datos abiertos reutilizables (Banco Mundial)
 ├── parser.py                      # Extracción del estado Next.js/Apollo
@@ -378,7 +390,7 @@ mercado-solar-cuba/
 ├── storage.py                     # CSV/JSON (inglés interno y español de entrega)
 ├── diagnostics.py                 # Diagnóstico: ¿por qué 0 anuncios reales?
 ├── visualization.py               # Gráficos PNG
-├── main.py                        # CLI: diagnose / fuentes / opendata / add / registrar / template / scrape / import / analyze / visualize
+├── main.py                        # CLI: diagnose / fuentes / solicitud / opendata / add / registrar / template / scrape / import / analyze / visualize
 ├── plantilla_anuncios_reales.csv  # Plantilla de registro manual de anuncios (11 columnas)
 ├── requirements.txt
 ├── .env.example
@@ -506,7 +518,8 @@ Cubren precios, potencias, municipios, vida útil/garantía, modelo, alcance,
 valores ausentes, duplicados, filtro por provincia, exportación en español,
 el pipeline general, el **diagnóstico**, el **registro manual**, el **registro
 de anuncios reales** (plantilla, fuente verificable y deduplicación), el
-**catálogo de fuentes** y los **datos abiertos** (205 pruebas).
+**catálogo de fuentes**, la **solicitud de autorización por escrito** y los
+**datos abiertos** (217 pruebas).
 
 ## 15. Datos de ejemplo
 

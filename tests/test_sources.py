@@ -35,6 +35,16 @@ class TestCatalogo:
         assert revolico.nivel_anuncio is True
         assert not revolico.reutilizacion.startswith("SÍ")
 
+    def test_tecnosolar_es_contexto_no_anuncio(self):
+        tecnosolar = next(f for f in get_sources() if "TecnoSolar" in f.nombre)
+        assert tecnosolar.nivel_anuncio is False
+        assert not tecnosolar.reutilizacion.startswith("SÍ")
+
+    def test_marketplace_sin_api_publica(self):
+        fb = next(f for f in get_sources() if "Marketplace" in f.nombre)
+        assert fb.nivel_anuncio is True
+        assert not fb.reutilizacion.startswith("SÍ")
+
     def test_fuentes_de_anuncios_declaradas(self):
         nombres = {f.nombre for f in ad_level_sources()}
         assert any("Revolico" in n for n in nombres)

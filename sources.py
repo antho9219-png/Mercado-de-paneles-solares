@@ -58,7 +58,9 @@ FUENTES: tuple[Fuente, ...] = (
             "robots.txt permite /search, PERO las Condiciones de uso prohíben "
             "'copiar, procesar o distribuir el texto y/o las fotos o imágenes de "
             "terceros sin su previa autorización' (norma 12) y usar herramientas de "
-            "publicación/renovación masiva sin consentimiento escrito (norma 11)."
+            "publicación/renovación masiva sin consentimiento escrito (norma 11). "
+            "Condiciones: https://help.revolico.com/es/articles/7263759-condiciones-de-uso "
+            "(consultadas el 2026-10-15)."
         ),
     ),
     Fuente(
@@ -77,7 +79,7 @@ FUENTES: tuple[Fuente, ...] = (
         tipo="datos abiertos",
         nivel_anuncio=False,
         reutilizacion="SÍ - licencia abierta CC BY 4.0",
-        automatizacion="Descarga de conjuntos publicados",
+        automatizacion="Sí (API PxWeb pública https://pxweb.irena.org + descarga)",
         detalle="Capacidad y generación renovable por país. No contiene anuncios.",
     ),
     Fuente(
@@ -100,6 +102,18 @@ FUENTES: tuple[Fuente, ...] = (
         "partidas de células/paneles fotovoltaicos (HS 8541) en los periodos probados.",
     ),
     Fuente(
+        nombre="TecnoSolar Cuba (termómetro de precios)",
+        url="https://tecnosolarcuba.com/precios-paneles-solares-cuba",
+        tipo="editorial-comercial",
+        nivel_anuncio=False,
+        reutilizacion="No sin permiso (no declara licencia abierta)",
+        automatizacion="No recomendado",
+        detalle="Sitio comercial cubano que publica MEDIANAS agregadas de 'los "
+        "anuncios de venta' publicados, no los anuncios originales. Es una fuente "
+        "secundaria con derechos de autor y sin API ni licencia abierta. "
+        "Comprobado el 2026-10-15.",
+    ),
+    Fuente(
         nombre="Prensa/tutoriales (Directorio Cubano, d-cuba, electro-habana…)",
         url="https://www.directoriocubano.info/",
         tipo="editorial-comercial",
@@ -115,9 +129,11 @@ FUENTES: tuple[Fuente, ...] = (
         tipo="clasificados",
         nivel_anuncio=True,
         reutilizacion="No sin permiso; además sin acceso automatizado autorizado",
-        automatizacion="No",
-        detalle="No ofrecen API pública para este uso y sus términos restringen la "
-        "recopilación automatizada de contenido de terceros.",
+        automatizacion="No (solo Meta Content Library para investigadores aprobados)",
+        detalle="No existe API pública para este uso. La 'Meta Content Library & "
+        "API' (que abarca Facebook Marketplace) está restringida a investigadores "
+        "aprobados de instituciones acreditadas, no para reutilización comercial, "
+        "y sus términos prohíben la recopilación automatizada por terceros.",
     ),
 )
 

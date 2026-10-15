@@ -6,6 +6,7 @@ Punto de entrada del programa (interfaz de línea de comandos).
 Subcomandos disponibles:
     diagnose   Explica por qué se recopilan (o no) anuncios reales.
     fuentes    Catálogo de fuentes y su estado legal (qué se puede reutilizar).
+    solicitud  Redacta una carta pidiendo autorización por escrito al sitio.
     opendata   Descarga datos ABIERTOS y reutilizables (contexto, no anuncios).
     scrape     Ejecuta el scraping AUTORIZADO (desactivado por defecto).
     import     Importa anuncios desde CSV/JSON obtenidos legítimamente.
@@ -19,6 +20,7 @@ Ejemplos:
     python main.py diagnose                 # ¿por qué hay 0 anuncios reales?
     python main.py diagnose --online        # además comprueba robots.txt y el sitio
     python main.py fuentes                  # qué fuentes son reutilizables
+    python main.py solicitud --sitio revolico.com   # carta pidiendo permiso escrito
     python main.py opendata                 # datos abiertos del Banco Mundial (Cuba)
     python main.py add -i                   # registrar un anuncio manualmente
     python main.py add --precio 250 --moneda USD --potencia "550 W" \
@@ -389,6 +391,45 @@ def cmd_fuentes(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_solicitud(args: argparse.Namespace, config: Config) -> int:
+    """
+    Redacta una **solicitud de autorización por escrito** a un sitio de anuncios.
+
+    Es la vía legítima para conseguir anuncios reales a nivel de listado cuando
+    las condiciones de uso exigen permiso previo (p. ej. Revolico). No envía ni
+    publica nada: escribe el borrador en pantalla (o, con ``--output``, en un
+    archivo) para que lo revises, lo completes y lo envíes.
+    """
+    from permisos import render_solicitud, save_solicitud
+
+    campos = dict(
+        sitio=args.sitio,
+        solicitante=args.solicitante,
+        email=args.email,
+        institucion=args.institucion,
+        uso=args.uso,
+        alcance=args.alcance,
+        ambito=args.ambito,
+    )
+
+    if args.output:
+        ruta = save_solicitud(args.output, **campos)
+        print(f"Solicitud escrita: {ruta}")
+        print(
+            "Revísala, completa los huecos [COMPLETAR: …] y envíala al medio de "
+            "contacto del sitio. Guarda la respuesta: es la base de la autorización."
+        )
+        return 0
+
+    print(render_solicitud(**campos))
+    print("-" * 60)
+    print(
+        "Revisa y completa los huecos [COMPLETAR: …] antes de enviarla.\n"
+        "Para escribirla en un archivo: python main.py solicitud --output solicitud.txt"
+    )
+    return 0
+
+
 def cmd_opendata(args: argparse.Namespace, config: Config) -> int:
     """
     Descarga datos ABIERTOS y reutilizables (contexto, no anuncios).
@@ -635,6 +676,28 @@ def build_parser() -> argparse.ArgumentParser:
         help="Muestra las fuentes de datos y su estado legal de reutilización.",
     )
     p_fuentes.set_defaults(func=cmd_fuentes)
+
+    p_sol = sub.add_parser(
+        "solicitud",
+        help="Redacta una solicitud de autorización por escrito al sitio de anuncios.",
+    )
+    p_sol.add_argument(
+        "--sitio", default="revolico.com", help="Sitio al que se solicita (por defecto, revolico.com)."
+    )
+    p_sol.add_argument("--solicitante", default=None, help="Nombre y apellidos del solicitante.")
+    p_sol.add_argument("--email", default=None, help="Correo de contacto.")
+    p_sol.add_argument(
+        "--institucion", default=None, help="Institución o perfil (estudiante, ONG…)."
+    )
+    p_sol.add_argument("--uso", default=None, help="Uso previsto de los datos.")
+    p_sol.add_argument("--alcance", default=None, help="Qué datos solicita reutilizar.")
+    p_sol.add_argument(
+        "--ambito", default="municipios de La Habana, Cuba", help="Ámbito geográfico."
+    )
+    p_sol.add_argument(
+        "--output", default=None, help="Archivo donde escribir la carta (si se omite, se imprime)."
+    )
+    p_sol.set_defaults(func=cmd_solicitud)
 
     p_open = sub.add_parser(
         "opendata",

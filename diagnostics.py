@@ -364,6 +364,7 @@ def format_report(checks: list[Check], config: Config) -> str:
         lineas.append("    * Importar CSV/JSON propio: python main.py import --input <archivo>")
         lineas.append("    * Datos abiertos (contexto): python main.py opendata")
         lineas.append("    * Ver fuentes y licencias: python main.py fuentes")
+        lineas.append("    * Pedir autorización por escrito: python main.py solicitud")
     else:
         lineas.append(
             "El scraping esta AUTORIZADO. Ejecuta: python main.py scrape --max-items 30"
