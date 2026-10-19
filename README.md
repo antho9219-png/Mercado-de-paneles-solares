@@ -1,4 +1,4 @@
-# ☀️ Mercado Solar en Cuba: crecimiento, oportunidades y futuro energético
+# Mercado Solar en Cuba: crecimiento, oportunidades y futuro energético
 
 Proyecto de **ciencia de datos** dedicado a **recopilar, organizar y analizar** información sobre la venta de paneles solares en Cuba, con especial atención a **La Habana**.
 
