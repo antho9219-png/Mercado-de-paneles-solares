@@ -28,3 +28,7 @@ data/processed/*
 # Archivos temporales
 *.tmp
 *.bak
+
+# Datos reales de terceros: se conservan localmente, pero NO se publican en Git.
+# (Condiciona el uso de Revolico: no se redistribuyen anuncios de terceros.)
+revolico.json

@@ -58,8 +58,8 @@ SCHEMA_FIELDS: tuple[str, ...] = (
     "vida_util",
     "estado",
     "fecha_publicacion",
-    "url_anuncio",
     "fecha_extraccion",
+    "url_anuncio",
 )
 
 ESTADOS_VALIDOS = {"nuevo", "usado", "reacondicionado", "no_especificado"}
@@ -175,8 +175,8 @@ def mapear_anuncio(ad: dict) -> dict:
         "fecha_publicacion": _fecha_iso(
             _obtener(ad, "date_published", "fecha_publicacion")
         ),
-        "url_anuncio": _limpiar(_obtener(ad, "url", "url_anuncio")),
         "fecha_extraccion": fecha_recop,
+        "url_anuncio": _limpiar(_obtener(ad, "url", "url_anuncio")),
     }
 
 
