@@ -32,9 +32,19 @@ data/processed/*
 # Datos reales de terceros: se conservan localmente, pero NO se publican en Git.
 # (Condiciona el uso de Revolico: no se redistribuyen anuncios de terceros.)
 revolico.json
+paneles_solares_completo.json
+scrape_revolco_ia_full.py
 
 # Backups de trabajo
 entrevistas.json.backup.*
 entrevistas.json.conflict-backup.*
 entrevistas_respaldo.*
+*.backup.*
+ 
+
+# Telegram
+*.session
+*.session-journal
+.env.telegram
+test_telegram_connection.py
 
