@@ -1,0 +1,19 @@
+[
+  {
+    "id": "1",
+    "marca": "AIKO",
+    "modelo": "AIKO-A660-MDE72Dw",
+    "potencia": 660,
+    "precio": {
+      "valor": 145,
+      "moneda": "USD"
+    },
+    "municipio": "Plaza de la Revolución",
+    "garantia": null,
+    "vida_util": 30,
+    "estado": "no_especificado",
+    "fecha_publicacion": null,
+    "url_anuncio": "https://www.revolico.com/item/contenedor-de-594-paneles-solares-720w-jinko-57503108",
+    "fecha_extraccion": "2026-10-16"
+  }
+]

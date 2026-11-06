@@ -49,7 +49,7 @@ async def main():
     
     all_messages = []
     try:
-        all_messages = await scraper.scrape_channels(channels, limit_per_channel=200)
+        all_messages = await scraper.scrape_channels(channels, limit_per_channel=None)
         logger.info(f"Total mensajes obtenidos: {len(all_messages)}")
     except Exception as e:
         logger.error(f"Error durante scraping: {e}")
@@ -81,12 +81,11 @@ async def main():
             'id': rec.get('id'),
             'marca': rec.get('marca'),
             'modelo': rec.get('modelo'),
-            'potencia': rec.get('potencia_w'),
+            'potencia_w': rec.get('potencia_w'),
             'precio': rec.get('precio'),
             'moneda': rec.get('moneda'),
             'municipio': rec.get('municipio'),
             'provincia': rec.get('provincia') or 'La Habana',
-            'cantidad': rec.get('cantidad_paneles'),
             'tipo': rec.get('categoria'),
             'estado': rec.get('estado'),
             'garantia': rec.get('garantia'),
@@ -96,7 +95,6 @@ async def main():
             'canal': rec.get('canal'),
             'telegram_message_id': rec.get('telegram_message_id'),
             'url_anuncio': rec.get('url_mensaje'),
-            'descripcion': rec.get('descripcion')
         })
     
     with open(output_file, "w", encoding="utf-8") as f:

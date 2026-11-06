@@ -1,0 +1,36 @@
+{
+    "proyecto": "Mercado de paneles solares",
+    "moneda": "USD",
+    "unidades": {
+        "precio": "USD",
+        "potencia": "W",
+        "vida util": "años",
+        "garantia": "meses"
+    },
+    "paneles": [
+        {
+            "id": 1,
+            "marca": "jasolar",
+            "modelo": "sku",
+            "potencia": 510,
+            "precio": 180,
+            "municipio": "Plaza de la revolucion",
+            "cantidad de paneles": "1",
+            "lugar de adquisicion": "Revolico",
+            "garantia": 1,
+            "vida util": null
+        },
+        {
+            "id": 2,
+            "marca": null,
+            "modelo": null,
+            "potencia": null,
+            "precio": null,
+            "municipio": null,
+            "cantidad de paneles": null,
+            "lugar de adquisicion": null,
+            "garantia": null,
+            "vida util": null
+        }
+    ]
+}
