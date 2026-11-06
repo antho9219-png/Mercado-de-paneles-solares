@@ -1,0 +1,17 @@
+id,canal,precio,capacidad_ah,voltaje_nominal_v,kwh,usd_kwh,tipo_bateria
+153,paneles_solares_cuba,500.0,200.0,220.0,44.0,11.363636363636363,
+197,paneles_solares_cuba,400.0,150.0,51.0,7.65,52.287581699346404,
+176,paneles_solares_cuba,300.0,100.0,24.0,2.4,125.0,
+170,paneles_solares_cuba,650.0,100.0,51.2,5.12,126.953125,
+164,paneles_solares_cuba,700.0,100.0,51.2,5.12,136.71875,
+41,paneles_solares_cuba,230.0,100.0,12.8,1.28,179.6875,Li-ion
+42,paneles_solares_cuba,230.0,100.0,12.8,1.28,179.6875,Li-ion
+229,paneles_solares_cuba,800.0,300.0,12.0,3.6,222.22222222222223,
+297,paneles_solares_cuba,600.0,100.0,24.0,2.4,250.0,LiFePO4
+168,paneles_solares_cuba,650.0,100.0,24.0,2.4,270.83333333333337,
+20,EquiposSolares,2800.0,200.0,51.2,10.24,273.4375,
+23,EquiposSolares,1600.0,100.0,52.0,5.2,307.6923076923077,
+26,EquiposSolares,1600.0,100.0,52.0,5.2,307.6923076923077,
+21,EquiposSolares,1600.0,100.0,51.2,5.12,312.5,
+193,paneles_solares_cuba,1050.0,100.0,24.0,2.4,437.5,
+194,paneles_solares_cuba,1050.0,100.0,24.0,2.4,437.5,

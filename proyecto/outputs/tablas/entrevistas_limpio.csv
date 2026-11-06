@@ -1,0 +1,36 @@
+id,marca,tipo_de_panel,potencia_por_panel,potencia_total,precio_por_panel,municipio,cantidad_de_paneles,lugar_de_adquisicion,garantia,vida_util,dispone_de_inversor,dispone_de_bateria,municipio_original,fuente,fecha_compra,usd_por_w,kw_instalados,gasto_usd
+1,JA Solar,Bifacial,510.0,510.0,180,Plaza de la Revolución,1.0,Revolico,1.0,,False,True,Plaza de la Revolución,Entrevistas,,0.35294117647058826,0.51,180.0
+2,Longi,Bifacial,640.0,3840.0,150,Playa,6.0,Revolico,6.0,3.0,False,True,Playa,Entrevistas,,0.234375,3.84,900.0
+3,Boviet Solar,Bifacial,550.0,2200.0,170,Playa,4.0,Revolico,1.0,10.0,False,True,Playa,Entrevistas,,0.3090909090909091,2.2,680.0
+4,JinkoSolar,Bifacial,535.0,1605.0,175,Cerro,3.0,Revolico,,10.0,False,True,Cerro,Entrevistas,,0.32710280373831774,1.605,525.0
+5,Longi,Bifacial,620.0,1240.0,160,Diez de Octubre,2.0,Revolico,,10.0,False,True,Diez de Octubre,Entrevistas,,0.25806451612903225,1.24,320.0
+6,,Bifacial,500.0,1500.0,170,Regla,3.0,Mipyme,,,False,False,Regla,Entrevistas,,0.34,1.5,510.0
+7,Longi,Bifacial,650.0,1300.0,150,Habana del Este,2.0,Mipyme,,,False,True,Habana del este,Entrevistas,,0.23076923076923078,1.3,300.0
+8,Longi,Bifacial,600.0,600.0,160,Habana del Este,1.0,Mipyme,1.0,,False,True,Habana del este,Entrevistas,,0.26666666666666666,0.6,160.0
+9,Longi,Bifacial,620.0,620.0,300,Habana del Este,1.0,Facebook,,,False,True,Habana del este,Entrevistas,,0.4838709677419355,0.62,300.0
+10,,Bifacial,630.0,2520.0,200,La Lisa,4.0,Vendedor Particular,,,True,True,La Lisa,Entrevistas,,0.31746031746031744,2.52,800.0
+11,Suncar,Bifacial,550.0,9900.0,300,Habana del Este,18.0,Mipyme,12.0,,True,True,Habana del este,Entrevistas,,0.5454545454545454,9.9,5400.0
+12,JA Solar,Bifacial,550.0,2200.0,155,Marianao,4.0,Vendedor Particular,,,False,True,Marianao,Entrevistas,,0.2818181818181818,2.2,620.0
+13,Trina Solar,Bifacial,600.0,1800.0,130,Plaza de la Revolución,3.0,Revolico,,,False,True,Plaza de la Revolución,Entrevistas,,0.21666666666666667,1.8,390.0
+14,Canadian Solar,Bifacial,500.0,1000.0,125,La Lisa,2.0,Mipyme,,,False,False,La Lisa,Entrevistas,,0.25,1.0,250.0
+15,JinkoSolar,Bifacial,590.0,4720.0,155,Boyeros,8.0,Facebook,,10.0,True,True,Boyeros,Entrevistas,,0.2627118644067797,4.72,1240.0
+16,Boviet Solar,Bifacial,510.0,2550.0,150,Guanabacoa,5.0,Revolico,1.0,10.0,True,True,Guanabacoa,Entrevistas,,0.29411764705882354,2.55,750.0
+17,RONMA,Bifacial,510.0,1020.0,130,Regla,2.0,Revolico,,,False,True,Regla,Entrevistas,,0.2549019607843137,1.02,260.0
+18,Longi,bifacial,550.0,2200.0,165,Arroyo Naranjo,4.0,Mipyme,1.0,,False,True,Arroyo Naranjo,Entrevistas,,0.3,2.2,660.0
+19,,bifacial,590.0,7080.0,155,Centro Habana,12.0,Revolico,,5.0,True,True,Centro Habana,Entrevistas,,0.2627118644067797,7.08,1860.0
+20,Trina Solar,Bifacial,610.0,6100.0,135,San Miguel del Padrón,10.0,Vendedor Particular,2.0,,True,True,San Miguel del Padrón,Entrevistas,,0.22131147540983606,6.1,1350.0
+21,Boviet Solar,Bifacial,550.0,1100.0,145,Playa,2.0,Revolico,1.0,5.0,False,True,Playa,Entrevistas,,0.2636363636363636,1.1,290.0
+22,,Bifacial,650.0,9100.0,200,Cerro,14.0,Revolico,4.0,,True,True,Cerro,Entrevistas,,0.3076923076923077,9.1,2800.0
+23,Longi,Bifacial,620.0,1860.0,160,Diez de Octubre,3.0,Revolico,,,True,True,Diez de Octubre,Entrevistas,,0.25806451612903225,1.86,480.0
+24,JA Solar,Bifacial,500.0,2000.0,150,Marianao,4.0,Vendedor Particular,1.0,10.0,True,True,Marianao,Entrevistas,,0.3,2.0,600.0
+25,Boviet Solar,Bifacial,580.0,2900.0,135,La Lisa,5.0,Revolico,1.0,,True,True,La Lisa,Entrevistas,,0.23275862068965517,2.9,675.0
+26,JinkoSolar,Bifacial,535.0,1070.0,175,Plaza de la Revolución,2.0,Revolico,,10.0,False,True,Plaza de la Revolución,Entrevistas,,0.32710280373831774,1.07,350.0
+27,Canadian Solar,Bifacial,600.0,2400.0,140,Boyeros,4.0,Mipyme,1.0,,False,True,Boyeros,Entrevistas,,0.23333333333333334,2.4,560.0
+28,,Bifacial,620.0,620.0,190,Guanabacoa,1.0,Revolico,,,False,False,Guanabacoa,Entrevistas,,0.3064516129032258,0.62,190.0
+29,Trina Solar,Bifacial,550.0,3850.0,140,Regla,7.0,Revolico,1.0,,True,True,Regla,Entrevistas,,0.2545454545454545,3.85,980.0
+30,Boviet Solar,Bifacial,550.0,2200.0,170,Arroyo Naranjo,4.0,Revolico,1.0,10.0,True,True,Arroyo Naranjo,Entrevistas,,0.3090909090909091,2.2,680.0
+31,Longi,Bifacial,620.0,4960.0,150,Centro Habana,8.0,Vendedor Particular,2.0,5.0,True,True,Centro Habana,Entrevistas,,0.24193548387096775,4.96,1200.0
+32,JA Solar,Bifacial,550.0,1100.0,125,San Miguel del Padrón,2.0,Facebook,,10.0,False,False,San Miguel del Padrón,Entrevistas,,0.22727272727272727,1.1,250.0
+33,,Bifacial,600.0,7200.0,250,Playa,12.0,Mipyme,6.0,10.0,True,True,Playa,Entrevistas,,0.4166666666666667,7.2,3000.0
+34,JinkoSolar,Bifacial,535.0,2140.0,140,Cerro,4.0,Revolico,,,False,True,Cerro,Entrevistas,,0.2616822429906542,2.14,560.0
+35,Boviet Solar,Bifacial,550.0,2750.0,155,Diez de Octubre,5.0,Revolico,1.0,,True,True,Diez de Octubre,Entrevistas,,0.2818181818181818,2.75,775.0

@@ -5,18 +5,25 @@ Fecha: 2026-10-26
 ## Conjuntos de datos
 
 ### Revolico (paneles_solares_completo.json)
-- **Tamaño inicial:** 30 registros
+- **Líneas totales del archivo:** 574
+- **Objetos JSON:** 30 registros
+- **Anuncios únicos:** 30
+- **Posibles duplicados:** 0 (por URL)
+- **URLs válidas sintácticamente:** 30/30
 - **Fuente:** Revolico (URLs revolico.com)
 - **Ubicación:** Raíz del proyecto
 
 ### Telegram (data/telegram_paneles_habana.json)
-- **Tamaño inicial:** 5 registros
+- **Líneas totales del archivo:** 107
+- **Objetos JSON:** 5 registros
+- **Anuncios únicos:** 5
+- **Posibles duplicados:** 0 (por URL)
 - **Fuente:** Telegram (canales públicos)
 - **Ubicación:** data/
 
 ## Auditoría Revolico
 
-### Completitud
+### Completitud (sobre 30 objetos JSON)
 | Campo | Valores no nulos | % Completitud |
 |---|---|---|
 | titulo | 30 | 100% |

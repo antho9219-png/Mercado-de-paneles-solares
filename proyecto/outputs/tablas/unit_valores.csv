@@ -1,0 +1,140 @@
+categoria,metrica,valor,id
+panel solar,usd_w,0.23015873015873015,1
+panel solar,usd_w,0.48717948717948717,2
+panel solar,usd_w,0.5363636363636364,3
+panel solar,usd_w,2.3636363636363638,16
+panel solar,usd_w,0.2423728813559322,17
+panel solar,usd_w,0.2627118644067797,18
+panel solar,usd_w,0.41304347826086957,19
+panel solar,usd_w,0.46846846846846846,24
+panel solar,usd_w,0.41304347826086957,25
+panel solar,usd_w,0.46846846846846846,27
+panel solar,usd_w,0.41304347826086957,28
+panel solar,usd_w,0.20161290322580644,29
+panel solar,usd_w,0.2923076923076923,30
+panel solar,usd_w,0.25203252032520324,31
+panel solar,usd_w,0.25203252032520324,32
+panel solar,usd_w,0.25203252032520324,33
+panel solar,usd_w,0.3111111111111111,38
+panel solar,usd_w,1.75,39
+panel solar,usd_w,0.34146341463414637,46
+panel solar,usd_w,0.3252032520325203,49
+panel solar,usd_w,0.3252032520325203,50
+panel solar,usd_w,0.2854838709677419,51
+panel solar,usd_w,0.2854838709677419,52
+panel solar,usd_w,0.24615384615384617,53
+panel solar,usd_w,0.38461538461538464,54
+panel solar,usd_w,5.932203389830509,55
+panel solar,usd_w,0.452991452991453,61
+panel solar,usd_w,0.4435483870967742,65
+panel solar,usd_w,0.41935483870967744,71
+panel solar,usd_w,0.5079365079365079,75
+panel solar,usd_w,2.3636363636363638,76
+panel solar,usd_w,2.3636363636363638,77
+panel solar,usd_w,0.2846153846153846,108
+panel solar,usd_w,0.2661290322580645,109
+panel solar,usd_w,4.444444444444445,115
+panel solar,usd_w,2.727272727272727,129
+panel solar,usd_w,0.2413793103448276,145
+panel solar,usd_w,2.727272727272727,146
+panel solar,usd_w,1.4655172413793103,175
+panel solar,usd_w,3.7398373983739837,184
+panel solar,usd_w,0.2,187
+panel solar,usd_w,0.21008403361344538,188
+panel solar,usd_w,0.20967741935483872,192
+panel solar,usd_w,0.19327731092436976,195
+panel solar,usd_w,0.2032520325203252,201
+panel solar,usd_w,1.6666666666666667,204
+panel solar,usd_w,1.6666666666666667,205
+panel solar,usd_w,1.6666666666666667,207
+panel solar,usd_w,0.21694915254237288,210
+panel solar,usd_w,0.22764227642276422,215
+panel solar,usd_w,2.9702970297029703,217
+panel solar,usd_w,2.1818181818181817,218
+panel solar,usd_w,0.2423728813559322,223
+panel solar,usd_w,4.065040650406504,224
+panel solar,usd_w,2.727272727272727,228
+panel solar,usd_w,0.2786885245901639,232
+panel solar,usd_w,0.2711864406779661,234
+panel solar,usd_w,0.288135593220339,235
+panel solar,usd_w,1.75,236
+panel solar,usd_w,0.2966101694915254,238
+panel solar,usd_w,0.4339622641509434,242
+panel solar,usd_w,0.36363636363636365,250
+panel solar,usd_w,34.54545454545455,285
+panel solar,usd_w,0.1509090909090909,295
+panel solar,usd_w,6.666666666666667,336
+panel solar,usd_w,1.2833333333333334,rev-000
+panel solar,usd_w,0.2696629213483146,rev-002
+panel solar,usd_w,0.4444444444444444,rev-004
+panel solar,usd_w,0.25471698113207547,rev-006
+panel solar,usd_w,0.27,rev-025
+panel solar,usd_w,0.25471698113207547,rev-028
+inversor,usd_w,0.21666666666666667,22
+inversor,usd_w,0.05384615384615385,165
+inversor,usd_w,0.03,171
+inversor,usd_w,0.1375,172
+inversor,usd_w,0.2125,173
+inversor,usd_w,0.03,177
+inversor,usd_w,0.17,178
+inversor,usd_w,0.16,180
+inversor,usd_w,0.2,182
+inversor,usd_w,0.2,200
+inversor,usd_w,0.165,202
+inversor,usd_w,0.13709677419354838,214
+inversor,usd_w,0.056666666666666664,225
+kit solar,usd_w,16.166666666666668,40
+kit solar,usd_w,4.074074074074074,57
+kit solar,usd_w,6.746031746031746,67
+kit solar,usd_w,6.746031746031746,69
+kit solar,usd_w,3.0833333333333335,88
+kit solar,usd_w,0.5203252032520326,92
+kit solar,usd_w,6.451612903225806,101
+kit solar,usd_w,12.333333333333334,110
+kit solar,usd_w,0.2727272727272727,114
+kit solar,usd_w,0.2727272727272727,123
+kit solar,usd_w,0.2727272727272727,124
+kit solar,usd_w,0.2727272727272727,126
+kit solar,usd_w,0.2727272727272727,127
+kit solar,usd_w,2.727272727272727,128
+kit solar,usd_w,2.727272727272727,134
+kit solar,usd_w,2.727272727272727,135
+kit solar,usd_w,2.727272727272727,136
+kit solar,usd_w,2.727272727272727,137
+kit solar,usd_w,12.100840336134453,138
+kit solar,usd_w,12.100840336134453,139
+kit solar,usd_w,5.090909090909091,141
+kit solar,usd_w,2.727272727272727,143
+kit solar,usd_w,6.416666666666667,152
+kit solar,usd_w,2.0,156
+kit solar,usd_w,2.0,169
+kit solar,usd_w,2.0,179
+kit solar,usd_w,2.0,181
+kit solar,usd_w,4.752475247524752,183
+kit solar,usd_w,2.0,185
+kit solar,usd_w,4.262295081967213,189
+kit solar,usd_w,2.090909090909091,191
+kit solar,usd_w,1.1016949152542372,222
+kit solar,usd_w,0.3211009174311927,rev-001
+kit solar,usd_w,0.3870967741935484,rev-003
+kit solar,usd_w,2.0,rev-013
+kit solar,usd_w,0.4444444444444444,rev-014
+kit solar,usd_w,0.5645161290322581,rev-015
+kit solar,usd_w,0.8928571428571429,rev-016
+kit solar,usd_w,0.4838709677419355,rev-018
+batería,usd_kwh,273.4375,20
+batería,usd_kwh,312.5,21
+batería,usd_kwh,307.6923076923077,23
+batería,usd_kwh,307.6923076923077,26
+batería,usd_kwh,179.6875,41
+batería,usd_kwh,179.6875,42
+batería,usd_kwh,11.363636363636363,153
+batería,usd_kwh,136.71875,164
+batería,usd_kwh,270.83333333333337,168
+batería,usd_kwh,126.953125,170
+batería,usd_kwh,125.0,176
+batería,usd_kwh,437.5,193
+batería,usd_kwh,437.5,194
+batería,usd_kwh,52.287581699346404,197
+batería,usd_kwh,222.22222222222223,229
+batería,usd_kwh,250.0,297

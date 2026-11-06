@@ -1,0 +1,5 @@
+metrica,categoria,n,p25,mediana,p75,min,max
+Panel solar (USD/W),panel solar,71,0.25,0.36,1.67,0.15,34.55
+Inversor (USD/W),inversor,13,0.06,0.16,0.2,0.03,0.22
+Kit solar (USD/W),kit solar,39,0.54,2.09,4.51,0.27,16.17
+Batería (USD/kWh),batería,16,134.28,236.11,307.69,11.36,437.5

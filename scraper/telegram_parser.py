@@ -21,7 +21,7 @@ from typing import Any, Optional
 # Marcas conocidas
 KNOWN_BRANDS = [
     'Longi', 'JinkoSolar', 'Jinko', 'JA Solar', 'AIKO', 'Trina Solar', 'Trina', 
-    'Canadian Solar', 'Risen', 'Suntech', 'Astronergy', 'Seraphim', 'Must'
+    'Canadian Solar', 'Risen', 'Suntech', 'Astronergy', 'Seraphim', 'Must', 'Bluesun'
 ]
 
 # Municipios de La Habana
@@ -57,33 +57,76 @@ class TelegramParser:
         self.life_pattern = re.compile(r'vida\s*[uú]til[^.\n]{0,60}', re.IGNORECASE)
         self.state_pattern = re.compile(r'\b(nuevo|usado|seminuevo|nueva)\b', re.IGNORECASE)
         self.model_pattern = re.compile(r'(?:modelo|serie|model)\s*:?\s*([A-Za-z0-9\-]+)', re.IGNORECASE)
+        self.panel_type_pattern = re.compile(r'\b(monocristalino[s]?|policristalino[s]?|bifacial[es]?|portátil[s]?|portatil[s]?|amorfos?)\b', re.IGNORECASE)
+        self.battery_type_pattern = re.compile(r'\b(lifepo4|litio|plomo-ácido|plomo acido|gel|AGM|ácido|acido)\b', re.IGNORECASE)
+        self.battery_capacity_pattern = re.compile(r'(\d+(?:[.,]\d+)?)\s*[Aa][Hh]', re.IGNORECASE)
+        self.battery_voltage_pattern = re.compile(r'(\d+(?:[.,]\d+)?)\s*[Vv]', re.IGNORECASE)
+        self.battery_energy_pattern = re.compile(r'(\d+(?:[.,]\d+)?)\s*[Kk][Ww][Hh]', re.IGNORECASE)
+        self.inverter_type_pattern = re.compile(r'\b(híbrido|hibrido|on-grid|off-grid|autónomo|autonomo|solar)\b', re.IGNORECASE)
+        self.inverter_power_pattern = re.compile(r'(\d+(?:[.,]\d+)?)\s*[Kk][Ww](?:/[Vv])?', re.IGNORECASE)
     
     def classify_category(self, text: str) -> Optional[str]:
         """Clasifica el anuncio por categoría."""
         text_lower = text.lower()
         
+        # Filtrar mensajes que son solo preguntas/solicitudes de compra
+        # Si es una pregunta buscando comprar y no ofreciendo vender con detalles de venta
+        if re.search(r'¿.*vende|alguien vende|busco.*comprar|necesito comprar', text_lower) and not re.search(r'\bvendo\b|\bventa\b|\bprecio\b.*\d|\d+\s*usd|\d+\s*cup', text_lower):
+            # Podría ser pregunta - ser más estricto
+            if not re.search(r'\bprecio\s*:|\$\s*\d+|\d+\s*(usd|cup|mlc)', text_lower):
+                # Si solo pregunta sin oferta concreta
+                if re.search(r'¿.*\?|alguien.*vende|busco|necesito', text_lower) and not re.search(r'\bvendo\b', text_lower):
+                    return None
+        
         # Kits primero
         if any(k in text_lower for k in ['kit solar', 'kit fotovoltaico', 'sistema solar completo']):
-            return 'kit solar'
+            # No filtrar como pregunta si es anuncio claro con kit
+            if re.search(r'¿.*\?|alguien vende|busco|necesito(?!.*vendo)', text_lower) and not re.search(r'\bvendo\b', text_lower) and not re.search(r'\d+\s*(usd|cup|mlc|\$)', text_lower):
+                pass  # seguir evaluando
+            else:
+                if re.search(r'\bvendo\b|\bofrezco\b|\bprecio\b|\ben venta\b', text_lower) or re.search(r'\d+\s*(usd|cup|mlc|\$)', text_lower) or re.search(r'\d+\s*(kw|kwh|w)\b', text_lower):
+                    return 'kit solar'
+                return 'kit solar'
         # Baterías (solo si no hay paneles)
         if any(b in text_lower for b in ['batería', 'bateria', 'lifepo4', 'litio']) and not re.search(r'\bpanel(?:es)?\b|\bm[oó]dulo(?:s)?\b|\bplaca(?:s)?\b', text_lower):
-            return 'batería'
+            if re.search(r'\bvendo\b|\bprecio\b|\bofrezco\b', text_lower) or re.search(r'\d+\s*(ah|v|usd|cup)', text_lower):
+                return 'batería'
         # Inversores (solo si no hay paneles)
         if 'inversor' in text_lower and not re.search(r'\bpanel(?:es)?\b|\bm[oó]dulo(?:s)?\b|\bplaca(?:s)?\b', text_lower):
-            return 'inversor'
+            if re.search(r'\bvendo\b|\bprecio\b|\bofrezco\b', text_lower) or re.search(r'\d+\s*(kw|w|usd|cup)', text_lower):
+                return 'inversor'
         # Paneles
         if any(p in text_lower for p in ['panel solar', 'paneles solares', 'módulo solar', 'módulos solares', 'placa solar', 'placas solares']):
-            return 'panel solar'
+            if re.search(r'\bvendo\b|\bprecio\b|\bofrezco\b|\d+\s*usd|\d+\s*cup', text_lower):
+                return 'panel solar'
+            # Aún puede ser anuncio
+            if re.search(r'\d+\s*[Ww]', text_lower) or self.brand_prefix_pattern.search(text) or 'modelo' in text_lower:
+                if re.search(r'¿.*alguien vende|busco|necesito(?!.*vendo)', text_lower) and not re.search(r'\bvendo\b', text_lower):
+                    # pero si tiene modelo/potencia claro, puede ser anuncio
+                    if re.search(r'\d+\s*[Ww]|\bmodelo\b', text_lower):
+                        return 'panel solar'
+                    return None
+                return 'panel solar'
         if re.search(r'\bpanel(?:es)?\b', text_lower) and ('solar' in text_lower or 'fotovolta' in text_lower):
-            return 'panel solar'
+            if re.search(r'\bvendo\b|\d+\s*[Ww]|\d+\s*usd|\bmodelo\b', text_lower):
+                return 'panel solar'
         if re.search(r'\bm[oó]dulo(?:s)?\b', text_lower) and ('solar' in text_lower or 'fotovolta' in text_lower):
-            return 'panel solar'
+            if re.search(r'\bvendo\b|\d+\s*[Ww]|\bmodelo\b', text_lower):
+                return 'panel solar'
         # Más permisivo: panel/paneles con potencia o marcas conocidas
         if re.search(r'\bpanel(?:es)?\b', text_lower):
-            if re.search(r'\d+\s*[Ww]', text_lower) or self.brand_prefix_pattern.search(text):
+            if re.search(r'\d+\s*[Ww]', text_lower) or self.brand_prefix_pattern.search(text) or re.search(r'\bmodelo\b', text_lower):
+                if re.search(r'¿.*alguien vende|busco|necesito(?!.*vendo)', text_lower) and not re.search(r'\bvendo\b', text_lower):
+                    if re.search(r'\d+\s*[Ww]|\bmodelo\b', text_lower):
+                        return 'panel solar'
+                    return None
                 return 'panel solar'
         if re.search(r'\bm[oó]dulo(?:s)?\b', text_lower):
-            if re.search(r'\d+\s*[Ww]', text_lower) or self.brand_prefix_pattern.search(text):
+            if re.search(r'\d+\s*[Ww]', text_lower) or self.brand_prefix_pattern.search(text) or re.search(r'\bmodelo\b', text_lower):
+                if re.search(r'¿.*alguien vende|busco|necesito(?!.*vendo)', text_lower) and not re.search(r'\bvendo\b', text_lower):
+                    if re.search(r'\d+\s*[Ww]|\bmodelo\b', text_lower):
+                        return 'panel solar'
+                    return None
                 return 'panel solar'
         
         return None
@@ -114,6 +157,10 @@ class TelegramParser:
         match = self.model_pattern.search(text)
         if match:
             return match.group(1).strip()
+        # Intentar patrones adicionales
+        m2 = re.search(r'(?:modelo|model)\s+([A-Z0-9][A-Z0-9\-]+)', text, re.IGNORECASE)
+        if m2:
+            return m2.group(1).strip()
         return None
     
     def extract_power(self, text: str) -> Optional[float]:
@@ -191,34 +238,149 @@ class TelegramParser:
             elif state == 'seminuevo':
                 return 'usado'
         return None
+
+    def extract_panel_type(self, text: str) -> Optional[str]:
+        """Extrae tipo de panel si está presente."""
+        match = self.panel_type_pattern.search(text)
+        if match:
+            pt = match.group(1).lower().rstrip('s')
+            mapping = {
+                'monocristalino': 'Monocristalino',
+                'policristalino': 'Policristalino',
+                'bifacial': 'Bifacial',
+                'portátil': 'Portátil',
+                'portatil': 'Portátil',
+                'amorfo': 'Amorfo',
+            }
+            return mapping.get(pt, pt)
+        return None
+
+    def extract_battery_type(self, text: str) -> Optional[str]:
+        """Extrae tipo de batería si está presente."""
+        match = self.battery_type_pattern.search(text)
+        if match:
+            bt = match.group(1).lower()
+            mapping = {
+                'lifepo4': 'LiFePO4',
+                'litio': 'Li-ion',
+                'plomo-ácido': 'Plomo-ácido',
+                'plomo acido': 'Plomo-ácido',
+                'gel': 'GEL',
+                'agm': 'AGM',
+                'ácido': 'Plomo-ácido',
+                'acido': 'Plomo-ácido',
+            }
+            return mapping.get(bt, bt.title())
+        return None
+
+    def extract_battery_capacity(self, text: str) -> Optional[float]:
+        """Extrae capacidad de batería en Ah."""
+        match = self.battery_capacity_pattern.search(text)
+        if match:
+            try:
+                return float(match.group(1).replace(',', '.'))
+            except ValueError:
+                pass
+        return None
+
+    def extract_battery_voltage(self, text: str) -> Optional[float]:
+        """Extrae voltaje nominal de batería en V."""
+        matches = self.battery_voltage_pattern.findall(text)
+        if matches:
+            try:
+                vals = [float(m.replace(',', '.')) for m in matches]
+                return max(vals)  # Tomar el voltaje más alto como nominal
+            except ValueError:
+                pass
+        return None
+
+    def extract_battery_energy(self, text: str) -> Optional[float]:
+        """Extrae energía de batería en kWh."""
+        match = self.battery_energy_pattern.search(text)
+        if match:
+            try:
+                return float(match.group(1).replace(',', '.'))
+            except ValueError:
+                pass
+        return None
+
+    def extract_inverter_type(self, text: str) -> Optional[str]:
+        """Extrae tipo de inversor si está presente."""
+        match = self.inverter_type_pattern.search(text)
+        if match:
+            it = match.group(1).lower()
+            mapping = {
+                'híbrido': 'Híbrido',
+                'hibrido': 'Híbrido',
+                'on-grid': 'On-Grid',
+                'off-grid': 'Off-Grid',
+                'autónomo': 'Autónomo',
+                'autonomo': 'Autónomo',
+                'solar': 'Solar',
+            }
+            return mapping.get(it, it.title())
+        return None
+
+    def extract_inverter_power(self, text: str) -> Optional[float]:
+        """Extrae potencia nominal de inversor en W."""
+        matches = self.inverter_power_pattern.findall(text)
+        if matches:
+            try:
+                vals = [float(m.replace(',', '.')) for m in matches]
+                return max(vals) * 1000  # kW a W
+            except ValueError:
+                pass
+        return None
     
-    def has_habana_evidence(self, text: str) -> tuple[bool, Optional[str]]:
+    def has_habana_evidence(self, text: str) -> tuple[bool, Optional[str], str]:
         """
-        Verifica evidencia explícita de que la oferta es en La Habana.
-        Retorna (es_habana, municipio_detectado)
+        Verifica evidencia geográfica.
+        Retorna (incluir, municipio_detectado, clasificacion)
+        - incluir=True si es La Habana o sin localidad especificada (según reglas)
+        - clasificacion: 'la_habana' o 'sin_localidad_especificada' o 'excluir' o 'requiere_revision'
         """
         text_lower = text.lower()
         
-        # Buscar municipio primero
+        # Primero verificar si menciona otra provincia explícitamente
+        other_match = self.other_province_pattern.search(text)
+        if other_match:
+            prov_other = other_match.group(1).lower()
+            # Si menciona otra provincia y NO menciona explícitamente La Habana junto con contexto que lo invalide
+            # Regla: si menciona explícitamente otra provincia distinta a La Habana -> excluir
+            if 'la habana' not in text_lower and 'ciudad de la habana' not in text_lower:
+                # Verificar si el municipio detectado es realmente de Habana (municipios de Habana no están en otras provincias)
+                municipio_cand = self.extract_municipio(text)
+                if municipio_cand:
+                    # Municipio de Habana encontrado, probablemente es Habana
+                    return True, municipio_cand, 'la_habana'
+                return False, None, 'excluir'
+            else:
+                # Menciona ambas - tratar con cuidado, pero si dice La Habana prevalece? 
+                # Seguir reglas: si hay mención explícita de otra provincia, ser estricto
+                municipio_cand = self.extract_municipio(text)
+                if municipio_cand and municipio_cand.lower() in str(HABANA_MUNICIPIOS).lower():
+                    # Verificar que municipio pertenece a Habana
+                    pass
+                # Si hay mención de otra provincia además de La Habana, puede ser ambigüo - marcar para revisión
+                # Pero priorizar según instrucciones
+                if municipio_cand:
+                    return True, municipio_cand, 'la_habana'
+                # Menciona La Habana explícitamente
+                return True, None, 'la_habana'
+        
+        # Buscar municipio de La Habana primero
         municipio = self.extract_municipio(text)
         if municipio:
-            # Asegurar que no hay otra provincia sin mención de La Habana
-            if self.other_province_pattern.search(text) and 'la habana' not in text_lower and municipio.lower() not in text_lower:
-                pass  # municipio ya confirma Habana
-            return True, municipio
+            return True, municipio, 'la_habana'
         
         # Buscar "La Habana" o variaciones
         if re.search(r'\bla\s+habana\b', text_lower) or re.search(r'\bciudad\s+de\s+la\s+habana\b', text_lower):
-            # Excluir si menciona otra provincia explícitamente sin contexto Habana
-            if self.other_province_pattern.search(text):
-                other = self.other_province_pattern.search(text)
-                if other and 'la habana' not in text_lower:
-                    return False, None
-            return True, None
+            return True, None, 'la_habana'
         
-        return False, None
+        # Sin localidad específica - puede incluirse si es producto relevante
+        return False, None, 'sin_localidad_especificada'
     
-    def parse_message(self, msg: dict) -> Optional[dict]:
+    def parse_message(self, msg: dict, allow_no_location: bool = False) -> Optional[dict]:
         """Parsea un mensaje de Telegram a formato de anuncio."""
         text = msg.get('text', '')
         if not text or len(text.strip()) < 10:
@@ -228,24 +390,64 @@ class TelegramParser:
         if not category:
             return None
         
-        # Excluir baterías/inversores sin paneles solares
-        if category in ('batería', 'inversor'):
+        # Verificación geográfica
+        geo_result = self.has_habana_evidence(text)
+        if len(geo_result) == 3:
+            incluir, municipio, clasificacion = geo_result
+        else:
+            # Compatibilidad con versión anterior
+            incluir, municipio = geo_result[0], geo_result[1]
+            clasificacion = 'la_habana' if incluir else 'sin_localidad_especificada'
+        
+        if clasificacion == 'excluir':
+            return None
+        if not incluir and clasificacion == 'sin_localidad_especificada':
+            if not allow_no_location:
+                return None  # Por defecto seguir comportamiento estricto para compatibilidad
+            # Incluir con localidad/provincia null
+            municipio = None
+            provincia = None
+        elif incluir:
+            provincia = 'La Habana' if clasificacion == 'la_habana' else None
+        else:
             return None
         
-        # Verificación geográfica estricta
-        is_habana, municipio = self.has_habana_evidence(text)
-        if not is_habana:
-            return None
-        
-        # Para paneles individuales, priorizar
+        # Extraer campos comunes
         price, moneda = self.extract_price(text)
         power_w = self.extract_power(text)
         brand = self.extract_brand(text)
         model = self.extract_model(text)
-        panel_count = self.extract_panel_count(text)
         warranty = self.extract_warranty(text)
         life_util = self.extract_life(text)
         estado = self.extract_state(text) or 'desconocido'
+        panel_type = self.extract_panel_type(text)
+        
+        # Campos específicos por categoría
+        panel_count = None
+        battery_type = None
+        battery_capacity = None
+        battery_voltage = None
+        battery_energy = None
+        inverter_type = None
+        inverter_power = None
+        
+        if category == 'panel solar':
+            panel_count = self.extract_panel_count(text)
+        elif category == 'batería':
+            battery_type = self.extract_battery_type(text)
+            battery_capacity = self.extract_battery_capacity(text)
+            battery_voltage = self.extract_battery_voltage(text)
+            battery_energy = self.extract_battery_energy(text)
+        elif category == 'inversor':
+            inverter_type = self.extract_inverter_type(text)
+            inverter_power = self.extract_inverter_power(text)
+        elif category == 'kit solar':
+            panel_count = self.extract_panel_count(text)
+            battery_type = self.extract_battery_type(text)
+            battery_capacity = self.extract_battery_capacity(text)
+            battery_energy = self.extract_battery_energy(text)
+            inverter_type = self.extract_inverter_type(text)
+            inverter_power = self.extract_inverter_power(text)
         
         now = datetime.now(timezone.utc).isoformat()
         msg_date = msg.get('date')
@@ -268,21 +470,41 @@ class TelegramParser:
             'telegram_message_id': msg_id,
             'canal': channel,
             'url_mensaje': url_mensaje,
+            'url': url_mensaje,
             'fecha_publicacion': fecha_publicacion,
             'fecha_extraccion': now,
             'categoria': category,
+            'categoria_producto': category,
+            'tipo': category,
             'marca': brand,
             'modelo': model,
             'potencia_w': power_w if category in ('panel solar', 'kit solar') else None,
-            'cantidad_paneles': panel_count,
             'precio': price,
             'moneda': moneda,
             'municipio': municipio,
-            'provincia': 'La Habana',
+            'provincia': provincia if 'provincia' in locals() else ('La Habana' if clasificacion == 'la_habana' else None),
+            'localidad': municipio,
+            'clasificacion_geografica': clasificacion if clasificacion != 'sin_localidad_especificada' else 'sin_localidad_especificada',
             'estado': estado,
             'garantia': warranty,
             'vida_util': life_util,
-            'descripcion': text[:500] if text else None,  # Limitado
+            'tipo_panel': panel_type,
+            'tipo_bateria': battery_type,
+            'marca_bateria': None,
+            'modelo_bateria': None,
+            'capacidad_ah': battery_capacity,
+            'voltaje_nominal_v': battery_voltage,
+            'energia_kwh': battery_energy,
+            'tipo_inversor': inverter_type,
+            'marca_inversor': None,
+            'modelo_inversor': None,
+            'potencia_inversor_w': inverter_power,
+            'incluye_paneles': None,
+            'incluye_bateria': None,
+            'incluye_inversor': None,
+            'componentes_incluidos': None,
+            'precio_sistema': None,
+            'fuente': 'Telegram',
             'observaciones': '; '.join(observaciones) if observaciones else None
         }
         

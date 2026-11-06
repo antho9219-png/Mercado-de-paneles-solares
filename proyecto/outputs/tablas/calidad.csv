@@ -1,0 +1,10 @@
+conjunto,problema,casos,n,pct
+Telegram,sin precio,166,352,47.2
+Telegram,precio < 20 USD,8,352,2.3
+Telegram,potencia > 2000 W en panel,12,352,3.4
+Telegram,moneda distinta de USD,9,352,2.6
+Telegram,sin marca,254,352,72.2
+Telegram,sin municipio,334,352,94.9
+Entrevistas,sin garantía,17,35,48.6
+Entrevistas,sin vida útil,21,35,60.0
+Entrevistas,sin fecha de compra,35,35,100.0

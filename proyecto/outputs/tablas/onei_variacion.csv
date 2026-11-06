@@ -1,0 +1,6 @@
+indicador,anio_inicial,anio_final,valor_inicial_gwh,valor_final_gwh,variacion_pct
+Consumo residencial,2019,2022,9256.9,8056.5,-13.0
+Consumo total,2019,2022,17176.6,14862.6,-13.5
+Fuentes (suministro total),2019,2022,21155.0,18322.8,-13.4
+Importación (generación móvil),2019,2022,449.4,2590.7,476.4
+Pérdidas,2019,2022,3428.5,3427.7,-0.0
