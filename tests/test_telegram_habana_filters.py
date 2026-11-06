@@ -44,18 +44,25 @@ def test_ubicacion_desconocida_excluido():
     assert rec is None
 
 
-def test_bateria_sin_panel_excluido():
+def test_bateria_con_habana_aceptado():
     parser = TelegramParser()
     msg = make_msg("Vendo batería LiFePO4 100Ah en La Habana", msg_id=14)
     rec = parser.parse_message(msg)
-    assert rec is None
+    assert rec is not None
+    assert rec['categoria'] == 'batería'
+    assert rec['provincia'] == 'La Habana'
+    assert rec['tipo_bateria'] == 'LiFePO4'
+    assert rec['capacidad_ah'] == 100.0
 
 
-def test_inversor_sin_panel_excluido():
+def test_inversor_con_habana_aceptado():
     parser = TelegramParser()
     msg = make_msg("Vendo inversor Growatt 5kW en Playa, La Habana", msg_id=15)
     rec = parser.parse_message(msg)
-    assert rec is None
+    assert rec is not None
+    assert rec['categoria'] == 'inversor'
+    assert rec['provincia'] == 'La Habana'
+    assert rec['potencia_inversor_w'] == 5000.0
 
 
 def test_kit_solar_con_habana_aceptado():
@@ -71,7 +78,7 @@ def test_deduplicacion_por_canal_y_message_id():
     validator = TelegramValidator()
     rec1 = {
         'canal': 'test_canal', 'telegram_message_id': 100,
-        'marca': 'Longi', 'descripcion': 'Panel en La Habana', 'precio': 200,
+        'marca': 'Longi', 'precio': 200,
         'categoria': 'panel solar', 'provincia': 'La Habana'
     }
     rec2 = dict(rec1)
@@ -84,7 +91,7 @@ def test_datos_incompletos_rechazados():
     validator = TelegramValidator()
     rec = {
         'canal': 'test_canal', 'telegram_message_id': 200,
-        'marca': None, 'descripcion': None, 'precio': None, 'potencia_w': None, 'cantidad_paneles': None,
+        'marca': None, 'modelo': None, 'precio': None, 'potencia_w': None,
         'categoria': 'panel solar', 'provincia': 'La Habana'
     }
     result = validator.validate([rec])
@@ -95,8 +102,36 @@ def test_provincia_diferente_rechazado_por_validador():
     validator = TelegramValidator()
     rec = {
         'canal': 'test_canal', 'telegram_message_id': 300,
-        'marca': 'Longi', 'descripcion': 'Panel', 'precio': 150,
+        'marca': 'Longi', 'precio': 150,
         'categoria': 'panel solar', 'provincia': 'Matanzas'
     }
     result = validator.validate([rec])
     assert result['valid'] == 0
+
+
+def test_registro_con_claves_eliminadas_rechazado():
+    """Un registro con claves del esquema antiguo no debe validarse."""
+    from scraper.telegram_validator import REMOVED_KEYS
+    validator = TelegramValidator()
+    rec = {
+        'canal': 'test_canal', 'telegram_message_id': 400,
+        'marca': 'Longi', 'precio': 150, 'potencia_w': 550,
+        'categoria': 'panel solar', 'provincia': 'La Habana',
+        'descripcion': 'texto viejo', 'cantidad': 3  # claves eliminadas
+    }
+    result = validator.validate([rec])
+    assert result['valid'] == 0
+    assert result['esquema_obsoleto'] == 1
+    assert REMOVED_KEYS & rec.keys()
+
+
+def test_registro_sin_marca_con_precio_y_categoria_aceptado():
+    """Sin marca/modelo, un registro con precio y categoría es oferta concreta."""
+    validator = TelegramValidator()
+    rec = {
+        'canal': 'test_canal', 'telegram_message_id': 500,
+        'marca': None, 'modelo': None, 'precio': 150,
+        'categoria': 'panel solar', 'provincia': 'La Habana'
+    }
+    result = validator.validate([rec])
+    assert result['valid'] == 1

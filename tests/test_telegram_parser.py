@@ -45,8 +45,8 @@ def test_extract_price():
 
 def test_deduplication():
     validator = TelegramValidator()
-    rec1 = {'canal': 'test', 'telegram_message_id': 123, 'marca': 'Longi', 'descripcion': 'x', 'precio': 100, 'categoria': 'panel solar', 'provincia': 'La Habana'}
-    rec2 = {'canal': 'test', 'telegram_message_id': 123, 'marca': 'Longi', 'descripcion': 'x', 'precio': 100, 'categoria': 'panel solar', 'provincia': 'La Habana'}
+    rec1 = {'canal': 'test', 'telegram_message_id': 123, 'marca': 'Longi', 'precio': 100, 'categoria': 'panel solar', 'provincia': 'La Habana'}
+    rec2 = {'canal': 'test', 'telegram_message_id': 123, 'marca': 'Longi', 'precio': 100, 'categoria': 'panel solar', 'provincia': 'La Habana'}
     
     validator2 = TelegramValidator()
     result = validator2.validate([rec1, rec2])
@@ -62,3 +62,16 @@ def test_no_inventar_datos():
     if rec:
         assert rec['marca'] is None or isinstance(rec['marca'], str)
         assert rec['precio'] is None or isinstance(rec['precio'], (int, float))
+
+
+def test_esquema_simplificado_sin_claves_eliminadas():
+    """El parser no debe emitir las claves eliminadas del esquema simplificado."""
+    from scraper.telegram_validator import REMOVED_KEYS
+    parser = TelegramParser()
+    msg = {'id': 9, 'text': 'Vendo panel solar Longi 550W precio 150 USD en La Habana',
+           'date': None, 'channel': 'test'}
+    rec = parser.parse_message(msg)
+    assert rec is not None
+    presentes = REMOVED_KEYS & rec.keys()
+    assert not presentes, f"Claves eliminadas presentes: {presentes}"
+    assert 'potencia_w' in rec  # potencia_w es el único campo de potencia general
