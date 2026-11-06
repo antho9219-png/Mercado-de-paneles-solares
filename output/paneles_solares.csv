@@ -1,0 +1,81 @@
+﻿ad_id,title,description,price_raw,price_value,currency,power_raw,power_w,brand,modelo,product_type,alcance,vida_util,vida_util_anios,garantia,location,ubicacion_original,province,municipality,category,date_published,url,collected_at,source,notes
+80001,Panel solar 550W Jinko,"Panel solar monocristalino Jinko de 550 W, nuevo, con vida útil de 25 años y garantía de 10 años.",250 USD,250.0,USD,550 W,550.0,Jinko,,panel solar,panel individual,25 años,25.0,10 años,"Centro Habana, La Habana","Centro Habana, La Habana",La Habana,Centro Habana,Plantas y Estaciones de Energía,2026-01-10T09:00:00+00:00,https://example.org/item/panel-solar-550w-jinko-80001,2026-10-15T19:05:14+00:00,ejemplo,
+80002,Panel solar 450W Longi,"Placa solar Longi de 450 W, con garantía de 12 años. Vida útil 25 años.",180 USD,180.0,USD,450 W,450.0,Longi,,panel solar,panel individual,25 años,25.0,12 años,"Playa, La Habana","Playa, La Habana",La Habana,Playa,Plantas y Estaciones de Energía,2026-01-12T10:30:00+00:00,https://example.org/item/panel-solar-450w-longi-80002,2026-10-15T19:05:14+00:00,ejemplo,
+80003,Panel solar 575W Trina,"Módulo Trina de 575 W monocristalino, vida útil de 25 años.",270 USD,270.0,USD,575 W,575.0,Trina,,panel solar,panel individual,25 años,25.0,,"Diez de Octubre, La Habana","Diez de Octubre, La Habana",La Habana,Diez de Octubre,Plantas y Estaciones de Energía,2026-01-14T16:00:00+00:00,https://example.org/item/panel-solar-575w-trina-80003,2026-10-15T19:05:14+00:00,ejemplo,
+80004,Paneles solares 600W Canadian,"Juego de 4 paneles Canadian Solar de 600 W, incluye estructura de montaje.",1100 USD,1100.0,USD,600 W,600.0,Canadian Solar,,panel solar,varios paneles,,,,"Boyeros, La Habana","Boyeros, La Habana",La Habana,Boyeros,Plantas y Estaciones de Energía,2026-01-16T11:15:00+00:00,https://example.org/item/paneles-solares-600w-canadian-80004,2026-10-15T19:05:14+00:00,ejemplo,
+80005,Kit solar 3kW Growatt,"Kit solar completo de 3 kW: 6 paneles, inversor Growatt e instalación. Vida útil 25 años.",3500 USD,3500.0,USD,3 kW,3000.0,Growatt,,kit solar,sistema completo,25 años,25.0,,"Marianao, La Habana","Marianao, La Habana",La Habana,Marianao,Plantas y Estaciones de Energía,2026-01-18T09:45:00+00:00,https://example.org/item/kit-solar-3kw-growatt-80005,2026-10-15T19:05:14+00:00,ejemplo,
+80006,Kit solar 5kW MUST,"Sistema fotovoltaico de 5 kW con inversor MUST PV18-5K, 10 paneles y baterías.",5800 USD,5800.0,USD,5 kW,5000.0,MUST,PV18-5K,kit solar,sistema completo,,,,"Playa, La Habana","Playa, La Habana",La Habana,Playa,Plantas y Estaciones de Energía,2026-01-20T14:20:00+00:00,https://example.org/item/kit-solar-5kw-must-80006,2026-10-15T19:05:14+00:00,ejemplo,
+80007,Inversor Growatt SPF5000ES,"Inversor híbrido Growatt SPF5000ES de 5 kW con MPPT, garantía de 5 años.",780 USD,780.0,USD,5 kW,5000.0,Growatt,SPF5000ES,inversor solar,no determinado,,,5 años,"Regla, La Habana","Regla, La Habana",La Habana,Regla,Plantas y Estaciones de Energía,2026-01-22T08:10:00+00:00,https://example.org/item/inversor-growatt-spf5000es-80007,2026-10-15T19:05:14+00:00,ejemplo,
+80008,Inversor Victron MultiPlus,"Inversor Victron MultiPlus 3 kW, garantía de 5 años.",950 USD,950.0,USD,3 kW,3000.0,Victron,,inversor solar,no determinado,,,5 años,"Cerro, La Habana","Cerro, La Habana",La Habana,Cerro,Plantas y Estaciones de Energía,2026-01-24T17:40:00+00:00,https://example.org/item/inversor-victron-multiplus-80008,2026-10-15T19:05:14+00:00,ejemplo,
+80009,Batería Pylontech US3000,Batería de litio Pylontech US3000 de 48V y 3.5 kWh.,1150 USD,1150.0,USD,,,Pylontech,US3000,bateria solar,no determinado,,,,"La Lisa, La Habana","La Lisa, La Habana",La Habana,La Lisa,Plantas y Estaciones de Energía,2026-01-26T12:00:00+00:00,https://example.org/item/bateria-pylontech-us3000-80009,2026-10-15T19:05:14+00:00,ejemplo,
+80010,Panel solar 660W JA Solar,"Panel JA Solar de 660 W, nuevo. Garantía de 10 años.",320 USD,320.0,USD,660 W,660.0,JA Solar,,panel solar,panel individual,,,10 años,"Guanabacoa, La Habana","Guanabacoa, La Habana",La Habana,Guanabacoa,Plantas y Estaciones de Energía,2026-01-28T15:30:00+00:00,https://example.org/item/panel-solar-660w-ja-80010,2026-10-15T19:05:14+00:00,ejemplo,
+80011,Panel solar 500W,"Panel solar de 500 W usado, precio a convenir.",,,USD,500 W,500.0,,,panel solar,panel individual,,,,"Habana Vieja, La Habana","Habana Vieja, La Habana",La Habana,Habana Vieja,Plantas y Estaciones de Energía,2026-01-30T10:05:00+00:00,https://example.org/item/panel-solar-500w-80011,2026-10-15T19:05:14+00:00,ejemplo,
+80012,Panel solar 540W Risen,Panel Risen de 540 W con garantía de 10 años.,240 USD,240.0,USD,540 W,540.0,Risen,,panel solar,panel individual,,,10 años,"San Miguel del Padrón, La Habana","San Miguel del Padrón, La Habana",La Habana,San Miguel del Padrón,Plantas y Estaciones de Energía,2026-02-01T09:00:00+00:00,https://example.org/item/panel-solar-540w-risen-80012,2026-10-15T19:05:14+00:00,ejemplo,
+80013,Panel solar 460W Deye,"Panel solar Deye de 460 W, nuevo.",190 USD,190.0,USD,460 W,460.0,Deye,,panel solar,panel individual,,,,"Cotorro, La Habana","Cotorro, La Habana",La Habana,Cotorro,Plantas y Estaciones de Energía,2026-02-03T13:25:00+00:00,https://example.org/item/panel-solar-460w-deye-80013,2026-10-15T19:05:14+00:00,ejemplo,
+80014,Panel solar 410W,"Panel solar de 410 W, sin marca visible.",150 USD,150.0,USD,410 W,410.0,,,panel solar,panel individual,,,,"Habana del Este, La Habana","Habana del Este, La Habana",La Habana,Habana del Este,Plantas y Estaciones de Energía,2026-02-05T16:50:00+00:00,https://example.org/item/panel-solar-410w-80014,2026-10-15T19:05:14+00:00,ejemplo,
+80015,Panel solar 585W Astronergy,"Módulo Astronergy de 585 W, vida útil de 30 años.",260 USD,260.0,USD,585 W,585.0,Astronergy,,panel solar,panel individual,30 años,30.0,,"Arroyo Naranjo, La Habana","Arroyo Naranjo, La Habana",La Habana,Arroyo Naranjo,Plantas y Estaciones de Energía,2026-02-07T11:10:00+00:00,https://example.org/item/panel-solar-585w-astronergy-80015,2026-10-15T19:05:14+00:00,ejemplo,
+80016,Kit solar 1kW,"Kit solar de 1 kW: 2 paneles, inversor y controlador de carga.",1200 USD,1200.0,USD,1 kW,1000.0,,,kit solar,sistema completo,,,,"Playa, La Habana","Playa, La Habana",La Habana,Playa,Plantas y Estaciones de Energía,2026-02-09T08:40:00+00:00,https://example.org/item/kit-solar-1kw-80016,2026-10-15T19:05:14+00:00,ejemplo,
+80018,Panel solar 450W,"Placa solar de 450 W, precio en pesos.",45000 CUP,45000.0,CUP,450 W,450.0,,,panel solar,panel individual,,,,"Diez de Octubre, La Habana","Diez de Octubre, La Habana",La Habana,Diez de Octubre,Plantas y Estaciones de Energía,2026-02-11T10:00:00+00:00,https://example.org/item/panel-solar-450w-80018,2026-10-15T19:05:14+00:00,ejemplo,
+80019,Inversor Epever 3kW,Inversor Epever de 3 kW con controlador MPPT.,600 USD,600.0,USD,3 kW,3000.0,Epever,,inversor solar,no determinado,,,,"Marianao, La Habana","Marianao, La Habana",La Habana,Marianao,Plantas y Estaciones de Energía,2026-02-13T14:15:00+00:00,https://example.org/item/inversor-epever-3kw-80019,2026-10-15T19:05:14+00:00,ejemplo,
+80020,Panel solar 700W Longi,"Panel Longi de 700 W de alta potencia, nuevo.",400 USD,400.0,USD,700 W,700.0,Longi,,panel solar,panel individual,,,,"Playa, La Habana","Playa, La Habana",La Habana,Playa,Plantas y Estaciones de Energía,2026-02-15T09:20:00+00:00,https://example.org/item/panel-solar-700w-longi-80020,2026-10-15T19:05:14+00:00,ejemplo,
+80021,Panel solar 350W usado,"Panel solar de 350 W usado, funciona correctamente.",110 USD,110.0,USD,350 W,350.0,,,panel solar,panel individual,,,,"Regla, La Habana","Regla, La Habana",La Habana,Regla,Plantas y Estaciones de Energía,2026-02-17T12:35:00+00:00,https://example.org/item/panel-solar-350w-usado-80021,2026-10-15T19:05:14+00:00,ejemplo,
+80022,Sistema solar 8kW,"Sistema solar fotovoltaico de 8 kW con 16 paneles, inversores y baterías.",9500 USD,9500.0,USD,8 kW,8000.0,,,kit solar,sistema completo,,,,"Playa, La Habana","Playa, La Habana",La Habana,Playa,Plantas y Estaciones de Energía,2026-02-19T07:55:00+00:00,https://example.org/item/sistema-solar-8kw-80022,2026-10-15T19:05:14+00:00,ejemplo,
+80023,Panel solar 600W,"Panel solar de 600 W, ubicación por confirmar.",280 USD,280.0,USD,600 W,600.0,,,panel solar,panel individual,,,,La Habana,"La Habana, La Habana",La Habana,,Plantas y Estaciones de Energía,2026-02-21T15:05:00+00:00,https://example.org/item/panel-solar-600w-80023,2026-10-15T19:05:14+00:00,ejemplo,
+80024,Panel solar 480W Trina,"Panel Trina de 480 W, garantía de 15 años.",210 USD,210.0,USD,480 W,480.0,Trina,,panel solar,panel individual,,,15 años,"Boyeros, La Habana","Boyeros, La Habana",La Habana,Boyeros,Plantas y Estaciones de Energía,2026-03-01T10:45:00+00:00,https://example.org/item/panel-solar-480w-trina-80024,2026-10-15T19:05:14+00:00,ejemplo,
+80025,Batería Felicity 5kWh,Batería de litio Felicity de 5 kWh.,1300 USD,1300.0,USD,,,Felicity,,bateria solar,no determinado,,,,"Boyeros, La Habana","Boyeros, La Habana",La Habana,Boyeros,Plantas y Estaciones de Energía,2026-03-03T09:30:00+00:00,https://example.org/item/bateria-felicity-5kwh-80025,2026-10-15T19:05:14+00:00,ejemplo,
+80026,Panel solar 520W Canadian,"Panel Canadian Solar de 520 W, nuevo, vida útil de 25 años.",230 USD,230.0,USD,520 W,520.0,Canadian Solar,,panel solar,panel individual,25 años,25.0,,"Cerro, La Habana","Cerro, La Habana",La Habana,Cerro,Plantas y Estaciones de Energía,2026-03-05T11:25:00+00:00,https://example.org/item/panel-solar-520w-canadian-80026,2026-10-15T19:05:14+00:00,ejemplo,
+57503108,PANEL SOLAR 660W AIKO BIFACIAL CONTENEDOR 720 PANELES,"YA EN EL PUERTO DEL MARIEL Y NACIONALIZADO. 
+DISPONGO DE BL Y TODA LA DOCUMENTACION.
+CONTENEDOR DE 720 PANELES.
+PANEL SOLAR AIKO 660W BIFACIAL — N-TYPE ABC
+Modelo: AIKO-A660-MDE72Dw
+Fabricante: AIKO Solar
+Serie: Stellar 3N+72
+
+Panel fotovoltaico de alta potencia y eficiencia, con tecnología N-Type ABC y construcción de doble vidrio, diseñado para instalaciones solares residenciales, comerciales e industriales.
+
+⚡ CARACTERÍSTICAS ELÉCTRICAS
+
+• Potencia máxima (Pmax): 660 W
+• Eficiencia del módulo: 24,4 %
+• Voltaje a máxima potencia (Vmp): 45,50 V
+• Corriente a máxima potencia (Imp): 14,51 A
+• Voltaje de circuito abierto (Voc): 54,20 V
+• Corriente de cortocircuito (Isc): 15,18 A
+• Tolerancia de potencia: 0 a +3 %
+• Tensión máxima del sistema: 1500 V DC
+• Fusible máximo en serie: 30 A
+
+🔧 CARACTERÍSTICAS FÍSICAS
+
+• Dimensiones: 2382 × 1134 × 30 mm
+• Peso: 32,2 kg ±3 %
+• Tipo de célula: N-Type ABC
+• Número de células: 144 (6 × 24)
+• Construcción: doble vidrio (2,0 + 2,0 mm)
+• Marco: aluminio anodizado
+• Caja de conexiones: IP68
+• Diodos bypass: 3
+• Conectores: compatibles con MC4
+• Temperatura de funcionamiento: −40 °C a +70 °C
+
+💪 RESISTENCIA Y GARANTÍA
+
+• Carga estática máxima frontal: 5400 Pa
+• Carga estática máxima posterior: 2400 Pa
+• Prueba de resistencia al granizo: 25 mm a 23 m/s
+• Degradación máxima durante el primer año: ≤1 %
+• Degradación anual del año 2 al 30: ≤0,35 %
+• Garantía de rendimiento lineal: 30 años
+• Garantía del producto: consultar las condiciones del proveedor.
+
+📦 INFORMACIÓN LOGÍSTICA
+
+• 36 paneles por pallet
+• 720 paneles por contenedor de 40 pies High Cube (40’ HC)",145,145.0,USD,660 W,660.0,AIKO,AIKO-A660-MDE72Dw,panel solar,sistema completo,,,Garantía de rendimiento lineal: 30 años; garantía del producto: consultar las condiciones del proveedor,"Plaza de la Revolución, La Habana",Plaza,La Habana,Plaza de la Revolución,,,https://www.revolico.com/item/contenedor-de-594-paneles-solares-720w-jinko-57503108,2026-10-16T21:22:47+00:00,revolico,"Promocionado (Destacado). 308 visitas. Estado en el sitio: PUBLISHED.
+Cantidad: contenedor de 720 paneles (contenedor de 40' HC); 36 paneles por pallet.
+El precio (145 USD) NO aclara si es por panel o por el contenedor completo.
+El sitio NO expone fecha de publicación; solo el campo 'updatedOnByUser' = 2026-10-10T13:43:12Z. Por eso 'fecha_publicacion' queda vacía.
+El slug de la URL dice '594 ... paneles solares 720w jinko'; el anuncio real dice AIKO 660 W y 720 paneles (slug desactualizado).
+Se omite el nombre y el teléfono del vendedor por ser datos personales.
+Fuente: página pública de Revolico. Sus Condiciones de uso (norma 12) prohíben copiar/procesar/distribuir contenido de terceros sin autorización previa; esto es la transcripción de UN anuncio de referencia, no scraping."

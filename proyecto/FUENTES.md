@@ -58,7 +58,19 @@
 
 ---
 
-## 3. Datos que **no** se pudieron obtener (y por eso el análisis se detiene ahí)
+## 3. Datos externos no verificados (auditoría 2026-11-07)
+
+Los siguientes claims aparecieron en borradores del reportaje pero **no están documentados** en `FUENTES.md` ni en `data/fuentes/`. Se marcan como **no verificados** y se excluyen del reportaje final salvo que se documenten con URL y hash:
+
+| Claim | Estado | Motivo |
+|---|---|---|
+| "6.700 GWh perdidos" (ministro de Energía) | **Inconsistente** | La ONEI registra −2.832 GWh (21 155 → 18 323 GWh, −13,4 %) entre 2019 y 2022. El claim de 6.700 GWh no coincide con la serie descargada. |
+| "22 parques / 481 MW / 2.000 MW para 2028 / 750.000 t combustible" | No documentado | Sin fuente en el repo. |
+| "Copextel, módulos 800-1.200 W, donaciones chinas, vida útil 20 años" | No documentado | Sin fuente en el repo. |
+| "Granma" como fuente | No documentado | FUENTES.md solo registra ONEI y Banco Mundial. |
+| "salario medio estatal" | Estimación blanda | No verificable. |
+
+## 3b. Datos que **no** se pudieron obtener (y por eso el análisis se detiene ahí)
 
 | Dato necesario | Para qué | Estado |
 |---|---|---|
